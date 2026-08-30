@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en" data-mode="light" data-lang="en" data-alt="/zh/self-hosted">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>InboxFly — Self-hosted email forwarding, managed. On your own Cloudflare.</title>
+<meta name="description" content="Open-source email forwarding manager for Cloudflare Email Routing. Rules, full copies, attachments and stats — on your own account. Free · MIT.">
+<link rel="icon" href="/assets/favicon.png" type="image/png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0a84ff">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..1000&display=swap" rel="stylesheet">
+<script>try{var m=localStorage.getItem('site-mode');document.documentElement.dataset.mode=m||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');}catch(e){}</script>
+<link rel="stylesheet" href="/assets/style.css?v=13">
+</head>
+<body>
+
+<nav class="nav"><div class="nav-inner">
+  <a class="logo" href="/self-hosted" title="InboxFly"><img src="/assets/logo.svg" alt="InboxFly"></a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#how">How it works</a>
+    <a href="/docs">Docs</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <button class="burger" id="nav-burger" aria-label="Menu">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+  <div class="nav-actions">
+    <div class="lang-sw">
+      <a href="/self-hosted" class="on">EN</a>
+      <a href="/zh/self-hosted">中文</a>
+    </div>
+    <button class="mode-btn" title="Toggle theme" aria-label="Toggle theme">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></svg>
+    </button>
+    <a class="btn btn-primary btn-sm" href="https://panel.inboxfly.email" target="_blank" rel="noopener">Open panel</a>
+  </div>
+</div>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="#features">Features</a>
+    <a href="#how">How it works</a>
+    <a href="/docs">Docs</a>
+    <a href="#faq">FAQ</a>
+    <div class="mm-actions">
+    <a class="btn btn-primary btn-sm mm-panel" href="https://panel.inboxfly.email" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>Open panel</a>
+  </div>
+  </div>
+</nav>
+
+<header class="hero wrap">
+  <div class="eyebrow">Open source · MIT licensed</div>
+  <h1 class="display">Self-hosted email forwarding,<br>finally <span class="accent">managed</span>.</h1>
+  <p class="sub">InboxFly adds the missing management panel to Cloudflare Email Routing — rules, full copies, attachments and stats, running on <span class="wavy">your own Cloudflare account</span>.</p>
+  <div class="cta-row">
+    <a class="btn btn-primary btn-wide" href="#" title="GitHub repo coming soon">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v14m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+      Deploy to Cloudflare
+    </a>
+    <a class="btn btn-ghost btn-wide" href="https://panel.inboxfly.email" target="_blank" rel="noopener">Open live panel</a>
+  </div>
+  <div class="micro">Free · MIT license · No credit card required · Your data stays in your own account</div>
+  <div class="avatars">
+    <span class="st"><i style="background:#5e5ce6">G</i><i style="background:#0a84ff">S</i><i style="background:#ff9f0a">M</i><i style="background:#30d158">V</i><i style="background:#e16540">+</i></span>
+    Processing real mail on inboxfly.email right now
+  </div>
+
+  <div class="mac-wrap">
+    <div class="mac">
+      <div class="mac-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="url">panel.inboxfly.email/#/mail</span></div>
+      <div class="mac-body">
+        <img class="demo-light" src="/assets/DEMO_Light-InboxFly.webp" alt="InboxFly panel — light" loading="lazy">
+        <img class="demo-dark" src="/assets/DEMO_Dark-InboxFly.webp" alt="InboxFly panel — dark" loading="lazy">
+      </div>
+    </div>
+    <div class="mac-fade"></div>
+  </div>
+</header>
+
+<section class="sec" id="how">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">How it works</div>
+      <h2>From zero to managed forwarding in 3 steps</h2>
+      <p>No servers to maintain. Everything runs on Cloudflare's free tier, inside your own account.</p>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="no">1</div><h3>Deploy to Cloudflare</h3><p>One click deploys the Worker, database and storage into your own account. Your data never leaves your control.</p></div>
+      <div class="step"><div class="no">2</div><h3>Connect your domain</h3><p>Enable Email Routing, verify a destination address, and set catch-all to the InboxFly Worker — the panel guides you through each step.</p></div>
+      <div class="step"><div class="no">3</div><h3>Mail gets managed</h3><p>Every incoming mail is forwarded, archived with full copy and attachments, searchable, and counted in your stats.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="features">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">Features</div>
+      <h2>Everything Cloudflare Email Routing is missing</h2>
+      <p>Rules that align with Cloudflare's own design, plus the management layer it never had.</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M6 12h12M9 18h6"/></svg></div><h3>Routing rules, CF-native</h3><p>Exact addresses and domain wildcards with a catch-all fallback — designed to mirror Cloudflare's own rule page, so nothing surprises you.</p></div>
+      <div class="feat"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18Z"/></svg></div><h3>10 languages</h3><p>English, 简体中文, 繁體中文, 日本語, 한국어, Deutsch, Français, Italiano, Русский and Tiếng Việt — auto-detected, switchable anytime.</p></div>
+      <div class="feat"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4"/></svg></div><h3>3 themes × light/dark</h3><p>Fluid Glass, Minimal and Playful themes — each with a full dark variant, following your system by default.</p></div>
+      <div class="feat"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v13H3V8M1 3h22v5H1zM10 12h4"/></svg></div><h3>Full copies & attachments</h3><p>Every mail is archived with HTML body, raw MIME and attachments on your own R2 storage — downloadable anytime.</p></div>
+      <div class="feat"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20V10M12 20V4M19 20v-7"/></svg></div><h3>Stats that mean something</h3><p>Forwarded, blocked, dropped, bounced and errors — per rule and per domain, plus 14-day trends.</p></div>
+      <div class="feat"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v14c0 6 8 10 8 10z"/></svg></div><h3>Security built in</h3><p>Cloudflare Turnstile on sign-in, PBKDF2-hashed credentials, sandboxed HTML rendering and CSRF protection — standard.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <div class="vs-wrap">
+      <div class="panel vs-card" style="background:var(--surface);">
+        <h3>🌩 Cloudflare Email Routing gives you</h3>
+        <ul>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Free email forwarding for your domain</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Catch-all &amp; simple address rules</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>World-class infrastructure, zero servers</li>
+        </ul>
+      </div>
+      <div class="panel vs-card">
+        <h3>✨ InboxFly adds the missing half</h3>
+        <ul>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>A real management panel — no dashboard clicking</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Full copies: HTML, raw MIME, attachments<span class="tag">enhancement</span></li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Bounce action — reject at SMTP level<span class="tag">enhancement</span></li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Sender blacklist, subject &amp; size filters<span class="tag">enhancement</span></li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Search, batch actions and per-rule stats<span class="tag">enhancement</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="faq">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">FAQ</div>
+      <h2>Frequently asked questions</h2>
+    </div>
+    <div class="faq">
+      <details open><summary>Where does my data live?</summary><p>In your own Cloudflare account — D1 database, R2 storage and the Worker all belong to you. InboxFly's panel is just an interface; revoke its API access anytime and your data stays.</p></details>
+      <details><summary>What does it cost?</summary><p>The software is free (MIT). Everything runs on Cloudflare's free tier: Workers 100k requests/day, D1 5GB, R2 10GB storage, Email Routing free. Beyond that, Cloudflare's standard rates apply.</p></details>
+      <details><summary>Will forwarded mail land in spam?</summary><p>Cloudflare Email Routing forwards via their own infrastructure with SPF aligned. Deliverability is generally good, but we publish sending-side guidance in the docs just in case. Note: "Forwarded" status means Cloudflare accepted it — the final mailbox placement isn't observable by any forwarding service.</p></details>
+      <details><summary>Do I need to trust InboxFly with my mail?</summary><p>No. Once deployed, mail flows directly through Cloudflare's Email Routing into the Worker in your account. The panel only manages configuration and displays stored copies — revoke its API token and the mail pipeline keeps running.</p></details>
+      <details><summary>Cloud vs self-hosted?</summary><p>Self-hosted (this page) runs on your own account for free. InboxFly Cloud — a hosted version with extra features like AI analysis — is coming soon. This site will switch to the Cloud homepage when it launches.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap" style="text-align:center;">
+    <div class="eyebrow" style="justify-content:center;">Get started</div>
+    <h2 class="display" style="font-size:clamp(28px,4vw,44px);">Your domain deserves<br>a real inbox manager.</h2>
+    <div class="cta-row">
+      <a class="btn btn-primary btn-wide" href="#">Deploy to Cloudflare</a>
+      <a class="btn btn-ghost btn-wide" href="https://panel.inboxfly.email" target="_blank" rel="noopener">Open live panel</a>
+    </div>
+    <div class="micro">Free · MIT · Your Cloudflare, your data</div>
+  </div>
+</section>
+
+<footer class="footer"><div class="footer-inner">
+  <div class="col" style="max-width:300px;">
+    <div class="brandline"><img src="/assets/logo-email.svg" alt="InboxFly" title="InboxFly"></div>
+    <p style="font-size:13px;color:var(--text-2);">The open-source management panel for Cloudflare Email Routing. Built for people who run their mail on their own account.</p>
+  </div>
+  <div class="col">
+    <h4>Product</h4>
+    <a href="https://panel.inboxfly.email" target="_blank" rel="noopener">Open panel</a>
+    <a href="/self-hosted">Self-hosted</a>
+    <a href="#" title="GitHub repo coming soon">GitHub</a>
+  </div>
+  <div class="col">
+    <h4>Resources</h4>
+    <a href="/docs">Documentation</a>
+    <a href="#features">Features</a>
+    <a href="#how">How it works</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <div class="col">
+    <h4>Legal</h4>
+    <a href="#">Terms</a>
+    <a href="#">Privacy</a>
+    <a href="#">License (MIT)</a>
+  </div>
+</div></footer>
+<div class="copy">© 2026 InboxFly — open source under MIT</div>
+
+<script src="/assets/landing.js?v=5"></script>
+</body>
+</html>

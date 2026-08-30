@@ -1,0 +1,5 @@
+# 临时：Cloud 版首页未上线，根路径跳转到开源版介绍页
+# Cloud 上线时：删除下面两行，并添加根 index.html（Cloud 首页）即可恢复
+/ /self-hosted 302
+/zh /zh/self-hosted 302
+

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="glass" data-mode="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>InboxFly</title>
+<link rel="icon" href="/icons/favicon.png" type="image/png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0a84ff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="InboxFly">
+<link rel="apple-touch-icon" href="/icons/favicon.png">
+<script>try{
+var t=localStorage.getItem('if-theme');if(t)document.documentElement.dataset.theme=t;
+var m=localStorage.getItem('if-mode');document.documentElement.dataset.mode=(m==='dark'||m==='light')?m:(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+}catch(e){}</script>
+<link rel="stylesheet" href="/app.css?v=0.6.0">
+</head>
+<body>
+<div class="blobs"><i class="b1"></i><i class="b2"></i><i class="b3"></i></div>
+<div id="app"></div>
+<div id="toast-wrap"></div>
+<script src="/i18n.js?v=0.6.0"></script>
+<script type="module" src="/app.js?v=0.6.0"></script>
+</body>
+</html>

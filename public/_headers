@@ -1,0 +1,3 @@
+# 静态资源缓存策略：HTML 与入口资源始终协商缓存（ETag），便于快速迭代
+/*
+  Cache-Control: no-cache

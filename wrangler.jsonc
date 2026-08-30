@@ -1,0 +1,43 @@
+{
+  // InboxFly Worker：邮件处理 + 管理 API + 静态面板
+  "name": "inboxfly",
+  "main": "src/index.js",
+  "compatibility_date": "2025-08-01",
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+  // 自定义域 panel.inboxfly.email 已在 CF 后台绑定（Workers → 域名与路由），
+  // 此处不再声明 routes，避免部署时要求 Zone Workers Routes 权限
+  "triggers": {
+    // 每日 03:00 UTC 清理超过保留期的 R2 对象（§8/§11）
+    "crons": ["0 3 * * *"]
+  },
+  "vars": {
+    // Email Routing catch-all 指向的 Worker 名称（一键开启转发用）
+    "APP_WORKER_NAME": "inboxfly"
+  },
+  "assets": {
+    "directory": "./public",
+    "run_worker_first": ["/api/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "inboxfly",
+      "database_id": "36801567-f4d6-4568-8a2f-6a17fdd685c0"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "R2",
+      "bucket_name": "inboxfly"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "KV",
+      "id": "52a66e7bf197442d83271decc41fc6ba"
+    }
+  ]
+}
