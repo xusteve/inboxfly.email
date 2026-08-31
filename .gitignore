@@ -4,3 +4,5 @@
 node_modules/
 dist/
 .DS_Store
+# 官网（landing site）独立于开源仓库：https://inboxfly.email 由单独 Worker 托管
+landing/
