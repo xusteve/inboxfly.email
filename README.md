@@ -80,7 +80,7 @@ Save a token in **Settings → Domains** (or during the wizard) to enable:
 - **Destination auto-verification** — add addresses via the CF API; status flips to verified when the recipient clicks the confirmation link.
 - **Native rule import** — detect and migrate existing CF routing rules.
 
-> ⚠️ **Token permissions (tested):** the Email Routing enable/status endpoints require **Zone → Zone Settings → Edit**, *not* "Email Routing Rules" — the latter only covers rule-list management. Create the token with both, or the panel's "Enable forwarding" will fail with `Authentication error`.
+> ⚠️ **Token permissions (field-tested)** — required: **Zone →** Zone (Read) · Zone Settings (Read + Edit) · DNS (Read + Edit) · Email Routing Rules (Read + Edit); **Account →** Email Routing Addresses (Read + Edit). Note: enabling/querying Email Routing requires the "Zone Settings" group, *not* "Email Routing Rules" — tick both or the panel automation fails with `Authentication error`. The panel never calls the Workers / D1 / KV / R2 APIs (those are runtime bindings), so those permissions are not needed.
 
 ## Architecture
 
