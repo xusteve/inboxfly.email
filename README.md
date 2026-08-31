@@ -1,10 +1,14 @@
-# InboxFly
+<p align="center">
+  <img src="./public/icons/logo.svg" alt="InboxFly" width="320">
+</p>
 
-**Self-hosted email forwarding manager for Cloudflare Email Routing.**
+<p align="center"><strong>Self-hosted email forwarding manager for Cloudflare Email Routing.</strong></p>
 
 InboxFly gives Cloudflare's free Email Routing the management layer it never had — routing rules that mirror Cloudflare's own UI, full mail copies with attachments, search, advanced filtering, and per-rule delivery stats. Everything runs inside **your own Cloudflare account** on the free tier: no servers, no third-party mail processing, no data leaving your control.
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/xusteve/inboxfly.email)
+<p align="center">
+  <a href="https://deploy.workers.cloudflare.com/?url=https://github.com/xusteve/inboxfly.email"><img src="https://deploy.workers.cloudflare.com/button" alt="Deploy to Cloudflare"></a>
+</p>
 
 > **Demo panel:** [panel.inboxfly.email](https://panel.inboxfly.email) · **Website:** [inboxfly.email](https://inboxfly.email)
 
