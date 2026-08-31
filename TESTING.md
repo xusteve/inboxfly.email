@@ -1,6 +1,6 @@
 # InboxFly 开源版测试清单
 
-> 环境：本地 `npm run dev` → http://localhost:8787 · 初始账号 `admin` / `inboxfly123`（或重走向导）
+> 环境：本地 `npm run dev` → http://localhost:8788 · 初始账号 `admin` / `inboxfly123`（或重走向导）
 > 标记：✅ 已由自动化/脚本回归 · ☐ 待手动测试 · 🌐 需真实环境（本地无法测试）
 
 ---
