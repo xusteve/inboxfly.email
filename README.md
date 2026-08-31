@@ -46,7 +46,7 @@ npm install
 npm run dev          # starts wrangler dev with local D1/R2/KV
 ```
 
-Open **http://localhost:8787** and complete the 5-step first-run wizard:
+Open **http://localhost:8788** and complete the 5-step first-run wizard:
 
 1. **SETUP_TOKEN** — local default is `inboxfly-local-setup` (defined in `.dev.vars`).
 2. **Admin credentials** — username + password (≥ 8 chars).
