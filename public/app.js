@@ -89,7 +89,7 @@ const STR = {
     'rules.actFwdDesc': '发送到电子邮件：将与此规则匹配的电子邮件路由到目标地址。',
     'rules.actDropDesc': '丢弃：删除与此规则匹配的电子邮件而不进行路由。',
     'rules.actBlockDesc': '退信（InboxFly 增强）：以 SMTP 拒绝并通知发件人（Cloudflare 原生不支持）。',
-    'rules.advFilters': '高级筛选（可选 · InboxFly 增强）', 'rules.matchHint2': '', 'dest.pickDest': '目标地址（已验证）',
+    'rules.advFilters': '高级筛选（可选 · InboxFly 增强）', 'dest.pickDest': '目标地址（已验证）',
     'dest.addPh': '添加转发目标邮箱，如 me@gmail.com', 'dest.flow': '流程：添加 → CF 向该地址发确认邮件（生产环境）→ 收件人点击 → 回到这里点「已验证」。目标地址为账号级资源，验证一次全域名通用。',
     'dest.verifiedAt': '添加于 {a} · 验证于 {b} · 来源：{s}', 'dest.createdAt': '添加于 {a}', 'dest.manual': '手动', 'dest.api': 'CF API',
     'dest.fallback': '默认兜底', 'dest.deleteConfirm': '删除该目标地址？', 'dest.usedByRule': '有规则正在使用该地址，请先修改规则',
@@ -116,6 +116,7 @@ const STR = {
     'set.devCard': '本地开发工具', 'set.devHint': '本地无法接收真实邮件：模拟收信会用与生产完全相同的规则管道（匹配 → 筛选 → 决策 → 存储 → 统计）注入测试数据，仅跳过真实投递。',
     'set.resetConfirm': '清空全部邮件/附件/统计数据？（规则与配置保留）', 'set.resetDone': '已清空',
     'domains.title': '域名', 'domains.empty': '暂无域名，可手动登记或配置 CF API Token 后同步',
+    'domains.syncNow': '从 Cloudflare 同步域名',
     'domains.addTitle': '登记域名', 'domains.addPh': 'example.com', 'domains.erToggle': '该域名已启用 Email Routing',
     'domains.added': '域名已登记', 'domains.deleted': '已移除', 'domains.deleteConfirm': '从列表移除该域名？（不影响 CF 上的实际配置）',
     'err.invalid_token': 'SETUP_TOKEN 不正确', 'err.bad_username': '用户名至少 3 位', 'err.bad_password': '密码至少 8 位',
@@ -249,6 +250,7 @@ const STR = {
     'set.devCard': 'Local dev tools', 'set.devHint': 'Local cannot receive real mail: Simulate runs the exact production pipeline (match → filter → decide → store → stats) and only skips actual delivery.',
     'set.resetConfirm': 'Clear all mail/attachments/stats? (rules & config are kept)', 'set.resetDone': 'Cleared',
     'domains.title': 'Domains', 'domains.empty': 'No domains — register manually or configure a CF API Token to sync',
+    'domains.syncNow': 'Sync domains from Cloudflare',
     'domains.addTitle': 'Register domain', 'domains.addPh': 'example.com', 'domains.erToggle': 'Email Routing enabled on this domain',
     'domains.added': 'Domain registered', 'domains.deleted': 'Removed', 'domains.deleteConfirm': 'Remove from list? (does not change anything on Cloudflare)',
     'err.invalid_token': 'Incorrect SETUP_TOKEN', 'err.bad_username': 'Username must be ≥3 chars', 'err.bad_password': 'Password must be ≥8 chars',
@@ -398,6 +400,7 @@ const IC = {
   dest: '<circle cx="12" cy="12" r="4"/><path d="M16 12v1.5a2.5 2.5 0 0 0 5 0V12a9 9 0 1 0-3.5 7.1"/>',
   languages: '<path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/>',
   stats: '<path d="M5 20V10M12 20V4M19 20v-7"/>',
+  refresh: '<path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/>',
   settings: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>',
   sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>',
   moon: '<path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/>',
@@ -446,7 +449,8 @@ const NAV = [
 ];
 
 function navLinks(active) {
-  return NAV.map(n => `<a class="nav ${active === n.id ? 'on' : ''}" href="#/${n.id}" title="${esc(n.t())}">${icon(n.icon)}<span class="lb">${esc(n.t())}</span>${n.id === 'mail' ? '<span class="cnt" data-badge="mail" style="display:none;"></span>' : ''}</a>`).join('');
+  return NAV.map(n => `<a class="nav ${active === n.id ? 'on' : ''}" href="#/${n.id}" title="${esc(n.t())}">${icon(n.icon)}<span class="lb">${esc(n.t())}</span>${n.id === 'mail' ? '<span class="cnt" data-badge="mail" style="display:none;"></span>' : ''}</a>`).join('')
+    + `<button class="nav nav-act" id="nav-sync" title="${esc(t('domains.syncNow'))}">${icon('refresh')}<span class="lb">${esc(t('domains.syncNow'))}</span></button>`;
 }
 
 function selectsHtml() {
@@ -622,6 +626,20 @@ function bindShell() {
   if (td) td.onchange = () => { if (td.value) location.hash = `#/mail?domain=${encodeURIComponent(td.value)}`; };
   const add = $('#dom-add');
   if (add) add.onclick = () => openDomainAddModal();
+  // 导航栏「同步域名」按钮：手动触发 CF zone 同步（§3.4.1 域名自动发现）
+  const navSync = $('#nav-sync');
+  if (navSync) navSync.onclick = async () => {
+    try {
+      navSync.disabled = true;
+      const r = await api('/api/domains/sync', { method: 'POST' });
+      toast(tf('set.syncDone', { z: r.zones, er: r.email_routing_on }), 'ok');
+      await loadSideDomains();
+      // 若当前在设置页，重建设置页以刷新域名列表（settings 路由渲染时自动 loadDomList）
+      if (location.hash.startsWith('#/settings')) render();
+    } catch (e) {
+      toast(t('err.' + e.message) !== 'err.' + e.message ? t('err.' + e.message) : (e.message === 'cf_token_missing' ? t('set.cfTokenMissing') : e.message), 'err');
+    } finally { navSync.disabled = false; }
+  };
   const lo = $('#top-logout');
   if (lo) lo.onclick = doLogout;
   bindIconMenus();
@@ -1036,7 +1054,8 @@ routes.mail = async function () {
       const r = await api('/api/emails/unread-count');
       const n = r.unread;
       document.querySelectorAll('[data-badge="mail"]').forEach(b => {
-        b.textContent = n > 0 ? (n > 99 ? '99+' : n) : '';
+        const label = n > 99 ? '99+' : String(n);
+        b.textContent = n > 0 ? label : '';
         b.style.display = n > 0 ? '' : 'none';
       });
     } catch { /* 轮询失败静默 */ }

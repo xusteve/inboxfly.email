@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ko" data-mode="light" data-lang="ko" data-alt="/about">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InboxFly 소개 — 오픈소스 Cloudflare 메일 전달 관리</title>
+<meta name="description" content="Cloudflare Email Routing을 위한 오픈소스 메일 전달 관리 도구. 셀프 호스팅, MIT 라이선스, 데이터는 내 Cloudflare 계정에.">
+<link rel="icon" href="/assets/favicon.png" type="image/png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="InboxFly">
+<meta property="og:title" content="InboxFly 소개 — 오픈소스 Cloudflare 메일 전달 관리">
+<meta property="og:description" content="Cloudflare Email Routing을 위한 오픈소스 메일 전달 관리 도구. 셀프 호스팅, MIT 라이선스, 데이터는 내 Cloudflare 계정에.">
+<meta property="og:url" content="https://inboxfly.email/ko/about">
+<meta property="og:image" content="https://inboxfly.email/assets/logo-512.png">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="https://inboxfly.email/ko/about">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..1000&display=swap" rel="stylesheet">
+<script>try{var m=localStorage.getItem('site-mode');document.documentElement.dataset.mode=m||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');}catch(e){}</script>
+<link rel="stylesheet" href="/assets/style.css?v=14">
+</head>
+<body>
+<nav class="nav"><div class="nav-inner">
+  <a class="logo" href="/ko/self-hosted" title="InboxFly"><img src="/assets/logo.svg" alt="InboxFly"></a>
+  <div class="nav-links">
+    <a href="/ko/self-hosted#features">기능</a>
+    <a href="/ko/self-hosted#how">사용법</a>
+    <a href="/ko/docs">문서</a>
+    <a href="/ko/self-hosted#faq">자주 묻는 질문</a>
+  </div>
+  <div class="nav-actions">
+    <div class="lang-drop">
+  <button class="lang-btn" aria-label="Language" title="Language">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>
+  </button>
+  <div class="lang-menu">
+    <a href="#" data-l="en">English</a><a href="#" data-l="zh">简体中文</a><a href="#" data-l="ja">日本語</a><a href="#" data-l="ko">한국어</a><a href="#" data-l="de">Deutsch</a><a href="#" data-l="fr">Français</a><a href="#" data-l="it">Italiano</a><a href="#" data-l="ru">Русский</a><a href="#" data-l="vi">Tiếng Việt</a>
+  </div>
+</div>
+    <button class="mode-btn" aria-label="Theme">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></svg>
+    </button>
+    <a class="btn btn-primary btn-sm" href="https://panel.inboxfly.email" target="_blank" rel="noopener">패널 열기</a>
+  </div>
+  <button class="burger" id="nav-burger" aria-label="Menu"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+</div>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="/ko/self-hosted#features">기능</a><a href="/ko/self-hosted#how">사용법</a><a href="/ko/docs">문서</a><a href="/ko/self-hosted#faq">자주 묻는 질문</a>
+  <div class="mm-actions"><a class="btn btn-primary btn-sm mm-panel" href="https://panel.inboxfly.email" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>패널 열기</a>
+</div>
+</nav>
+<div class="doc-wrap">
+  <div class="crumb"><a href="/ko/self-hosted">← 홈</a></div>
+  <h1>InboxFly 소개</h1>
+  <div class="art-body">
+<h2>InboxFly란?</h2><p>InboxFly는 <strong>Cloudflare Email Routing</strong>을 위한 <strong>오픈소스 메일 전달 관리 도구</strong>입니다. Cloudflare 무료 메일 전달에 빠져 있는 레이어를 채웁니다: 규칙, 전체 사본, 첨부, 검색, 규칙별 통계를 갖춘 진짜 관리 패널.</p><h2>왜 만들었나</h2><p>Cloudflare Email Routing은 무료로 전달하지만 관리 인터페이스가 없습니다. InboxFly가 그 간극을 메웁니다. 원칙은 하나입니다: <strong>내 메일은 내 Cloudflare 계정에 남는다</strong>.</p><h2>원칙</h2><ul><li><strong>오픈소스</strong> — MIT. 감사 가능하고 자유롭게 셀프 호스팅.</li><li><strong>데이터 소유권</strong> — D1·R2·Worker는 내 계정 안에. InboxFly는 메일 내용을 보관하지 않습니다.</li><li><strong>프라이버시 우선</strong> — 추적 픽셀을 기본으로 차단합니다.</li><li><strong>무료로 시작</strong> — Cloudflare 무료 요금제만으로 동작.</li></ul><h2>문의</h2><p>질문·피드백·보안 제보: <a href="mailto:support@inboxfly.email">support@inboxfly.email</a>.</p>
+  </div>
+</div>
+<footer class="footer"><div class="footer-inner">
+  <div class="col" style="max-width:300px;">
+    <div class="brandline"><img src="/assets/logo-email.svg" alt="InboxFly" title="InboxFly"></div>
+    <p style="font-weight:700;font-size:14px;letter-spacing:-.01em;margin-bottom:8px;">내 메일. 내 Cloudflare. 하나의 패널.</p>
+    <p style="font-size:13px;color:var(--text-2);">Cloudflare Email Routing을 위한 오픈소스 관리 패널.</p>
+  </div>
+  <div class="col">
+    <h4>제품</h4>
+    <a href="https://panel.inboxfly.email" target="_blank" rel="noopener">패널 열기</a>
+    <a href="/ko/self-hosted">셀프 호스팅</a>
+    <a href="#" title="GitHub repo coming soon">GitHub</a>
+  </div>
+  <div class="col">
+    <h4>리소스</h4>
+    <a href="/ko/docs">문서</a>
+    <a href="#features">기능</a>
+    <a href="#how">사용법</a>
+    <a href="#faq">자주 묻는 질문</a>
+  </div>
+  <div class="col"><h4>회사</h4><a href="/ko/about">회사 소개</a><a href="/ko/terms">서비스 약관</a><a href="/ko/privacy">개인정보 처리방침</a><a href="mailto:support@inboxfly.email">support@inboxfly.email</a></div>
+</div></footer>
+<div class="copy">© 2026 InboxFly — MIT 라이선스로 공개</div>
+<script>window.addEventListener("load",()=>{navigator.serviceWorker&&navigator.serviceWorker.register("/sw.js").catch(()=>{})});</script>
+<script src="/assets/landing.js?v=6"></script>
+</body>
+</html>

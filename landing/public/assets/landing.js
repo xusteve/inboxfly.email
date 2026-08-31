@@ -24,24 +24,55 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || ['localho
   navigator.serviceWorker.register('/sw.js').catch(() => {});
 }
 
-// ---------- 语言持久化：点击记忆 + 跨页自动跟随 ----------
+// ---------- 语言切换：lucide languages 图标 + 下拉 ----------
 (function () {
-  const root = document.documentElement;
-  const pageLang = root.dataset.lang;           // 'en' | 'zh'（404 页无此属性则跳过）
-  const alt = root.dataset.alt;                 // 对应语言的备用路径
-  // 记录语言切换点击
-  document.querySelectorAll('.lang-sw a').forEach(a => {
-    a.addEventListener('click', () => {
-      const toZh = a.getAttribute('href').startsWith('/zh');
-      try { localStorage.setItem('site-lang', toZh ? 'zh' : 'en'); } catch (e) {}
+  const LANG_CODES = ['en', 'zh', 'ja', 'ko', 'de', 'fr', 'it', 'ru', 'vi'];
+  const LANG_NAMES = { en: 'English', zh: '简体中文', ja: '日本語', ko: '한국어', de: 'Deutsch',
+    fr: 'Français', it: 'Italiano', ru: 'Русский', vi: 'Tiếng Việt' };
+  // 生成当前语言页面的目标链接：9 语言全部保留同路径（页面均存在）；仅 en/zh 才有的路径
+  // （如 /articles、/zh/articles）切到其他语言时回落到对应语言 product 页
+  const KEEP_PATH = ['/about', '/terms', '/privacy', '/docs', '/self-hosted'];
+  function langHref(lang) {
+    const path = location.pathname;
+    const noLang = path.replace(/^\/(zh|ja|ko|de|fr|it|ru|vi)\//, '/');
+    if (lang === 'en') return noLang === '/' ? '/self-hosted' : noLang;
+    if (lang === 'zh') return noLang === '/' ? '/zh/self-hosted' : '/zh' + noLang;
+    return KEEP_PATH.includes(noLang) ? '/' + lang + noLang : '/' + lang + '/self-hosted';
+  }
+  // 当前语言：从路径识别
+  function currentLang() {
+    const m = location.pathname.match(/^\/(zh|ja|ko|de|fr|it|ru|vi)\//);
+    return m ? m[1] : 'en';
+  }
+  document.querySelectorAll('.lang-drop').forEach(drop => {
+    const btn = drop.querySelector('.lang-btn');
+    const menu = drop.querySelector('.lang-menu');
+    if (!btn || !menu) return;
+    // 高亮当前语言
+    const cur = currentLang();
+    menu.querySelectorAll('a').forEach(a => {
+      a.classList.toggle('on', a.dataset.l === cur);
+      a.querySelector('.tick')?.remove();
+      if (a.dataset.l === cur) {
+        const t = document.createElement('span');
+        t.className = 'tick'; t.textContent = '✓';
+        a.appendChild(t);
+      }
+    });
+    btn.onclick = e => {
+      e.stopPropagation();
+      menu.classList.toggle('open');
+    };
+    menu.querySelectorAll('a').forEach(a => {
+      a.onclick = e => {
+        e.preventDefault();
+        e.stopPropagation();
+        try { localStorage.setItem('site-lang', a.dataset.l); } catch (err) {}
+        location.href = langHref(a.dataset.l);
+      };
     });
   });
-  // 已有偏好且与当前页语言不同 → 自动跳到备用路径
-  let stored = null;
-  try { stored = localStorage.getItem('site-lang'); } catch (e) {}
-  if (pageLang && alt && stored && stored !== pageLang) {
-    location.replace(alt);
-  }
+  document.addEventListener('click', () => document.querySelectorAll('.lang-menu.open').forEach(m => m.classList.remove('open')));
 })();
 
 // ---------- 移动端汉堡菜单 ----------
@@ -51,4 +82,9 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || ['localho
   if (!burger || !menu) return;
   burger.onclick = () => menu.classList.toggle('open');
   menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => menu.classList.remove('open')));
+})();
+
+// ---------- FAQ 默认全部展开（兼容旧缓存 HTML） ----------
+(function () {
+  document.querySelectorAll('.faq details').forEach(d => { d.open = true; });
 })();

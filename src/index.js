@@ -9,6 +9,48 @@ import { handleEmail } from './email.js';
 import { cfClient, cfErr, findZone, routingStatus, enableRouting, recommendedDns, listDns, createDns, setCatchAllWorker, listNativeRules, deleteNativeRule, listDestinationAddresses, createDestinationAddress } from './cfapi.js';
 
 const app = new Hono();
+
+// 从 Cloudflare 同步账号下全部 zone 列表与 Email Routing 状态（§3.4.1 域名自动发现）
+// 手动同步接口与 Cron 定时刷新共用；未配置 token 时静默返回 null
+async function syncZonesFromCF(env) {
+  const cfg = await getConfig(env);
+  const token = cfg.cf_api_token;
+  if (!token) return null;
+  const headers = { Authorization: `Bearer ${token}` };
+  const zones = [];
+  for (let page = 1; page <= 5; page++) {
+    const res = await fetch(`https://api.cloudflare.com/client/v4/zones?per_page=50&page=${page}`, { headers });
+    const data = await res.json().catch(() => ({}));
+    if (!data.success) return { error: 'cf_api_error', detail: (data.errors || []).map(e => e.message).join('; ') || String(res.status) };
+    zones.push(...(data.result || []).map(z => ({ id: z.id, name: String(z.name).toLowerCase(), account_id: z.account?.id })));
+    const total = data.result_info?.total_count || zones.length;
+    if (page >= Math.ceil(total / 50)) break;
+  }
+  const registry = getRegistry(cfg);
+  const manual = registry.filter(e => e.source === 'manual');
+  const cfEntries = [];
+  for (const z of zones) {
+    let er = false;
+    try {
+      const r = await fetch(`https://api.cloudflare.com/client/v4/zones/${z.id}/email/routing`, { headers });
+      const d = await r.json();
+      er = !!(d.result && d.result.enabled);
+    } catch { er = false; }
+    cfEntries.push({ domain: z.name, source: 'cf', email_routing: er, zone_id: z.id, ...(z.account_id ? { account_id: z.account_id } : {}) });
+  }
+  if (cfEntries[0]?.account_id) await setConfig(env, 'cf_account_id', cfEntries[0].account_id);
+  const merged = [...cfEntries, ...manual.filter(m => !cfEntries.some(x => x.domain === m.domain))];
+  await setRegistry(env, merged);
+  await setConfig(env, 'last_zone_sync_at', new Date().toISOString());
+  return { ok: true, zones: cfEntries.length, email_routing_on: cfEntries.filter(e => e.email_routing).length };
+}
+
+// 全局安全响应头（防点击劫持 / 防 referrer 泄露）
+app.use('*', async (c, next) => {
+  c.header('X-Frame-Options', 'DENY');
+  c.header('Referrer-Policy', 'no-referrer');
+  await next();
+});
 const now = () => new Date().toISOString();
 const uid = p => `${p}_${randomHex(8)}`;
 const j = (c, obj, status = 200) => c.json(obj, status);
@@ -58,6 +100,10 @@ app.use('/api/*', async (c, next) => {
 
   const cfg = await getConfig(c.env);
   if (!cfg.setup_completed) return j(c, { error: 'setup_required' }, 401);
+  // 调试端点仅限本地开发（DEV_TOOLS=true），生产返回 404
+  if (c.req.path.startsWith('/api/dev/') && c.env.DEV_TOOLS !== 'true') {
+    return j(c, { error: 'not_found' }, 404);
+  }
   const sess = getCookie(c, 'if_session') || '';
   const payload = await verifySessionToken(sess, cfg.session_secret);
   if (!payload) return j(c, { error: 'unauthorized' }, 401);
@@ -292,10 +338,13 @@ function parseFiltersInput(f) {
   const out = {};
   if (Array.isArray(f.from_blacklist)) {
     const arr = f.from_blacklist.map(x => String(x).trim()).filter(Boolean);
+    if (arr.some(x => x.length > 100)) return { error: 'regex_too_long' };
     if (arr.length) out.from_blacklist = arr;
   }
   if (f.subject_regex !== undefined && f.subject_regex !== null && String(f.subject_regex) !== '') {
     const re = String(f.subject_regex);
+    if (re.length > 100) return { error: 'regex_too_long' };
+    if (/(\([^)]*[+*][^)]*\)\s*[+*{])/.test(re)) return { error: 'regex_too_complex' }; // 拒绝嵌套量词（ReDoS）
     try { new RegExp(re); } catch { return { error: 'bad_subject_regex' }; }
     out.subject_regex = re;
   }
@@ -307,6 +356,7 @@ function parseFiltersInput(f) {
   if (f.has_attachment === true || f.has_attachment === false) out.has_attachment = f.has_attachment;
   if (Array.isArray(f.to_whitelist)) {
     const arr = f.to_whitelist.map(x => String(x).trim()).filter(Boolean);
+    if (arr.some(x => x.length > 100)) return { error: 'regex_too_long' };
     if (arr.length) out.to_whitelist = arr;
   }
   return out;
@@ -471,7 +521,6 @@ app.get('/api/emails/:id', async c => {
 app.get('/api/emails/:id/html', async c => {
   const row = await getEmailOr404(c);
   if (!row) return j(c, { error: 'not_found' }, 404);
-  // (404 响应由调用处返回)
   if (!row.body_html_r2_key) return j(c, { html: null });
   const obj = await c.env.R2.get(row.body_html_r2_key);
   if (!obj) return j(c, { html: null });
@@ -485,7 +534,6 @@ app.get('/api/emails/:id/html', async c => {
 app.get('/api/emails/:id/raw', async c => {
   const row = await getEmailOr404(c);
   if (!row) return j(c, { error: 'not_found' }, 404);
-  // (404 响应由调用处返回)
   if (!row.raw_r2_key) return j(c, { error: 'metadata_only' }, 404);
   const obj = await c.env.R2.get(row.raw_r2_key);
   if (!obj) return j(c, { error: 'not_found' }, 404);
@@ -522,7 +570,6 @@ async function deleteEmailById(env, row) {
 app.delete('/api/emails/:id', async c => {
   const row = await getEmailOr404(c);
   if (!row) return j(c, { error: 'not_found' }, 404);
-  // (404 响应由调用处返回)
   await deleteEmailById(c.env, row);
   return j(c, { ok: true });
 });
@@ -550,7 +597,6 @@ app.post('/api/emails/batch-delete', async c => {
 app.get('/api/emails/:id/text', async c => {
   const row = await getEmailOr404(c);
   if (!row) return j(c, { error: 'not_found' }, 404);
-  // (404 响应由调用处返回)
   if (!row.body_text_r2_key) return j(c, { text: null });
   const obj = await c.env.R2.get(row.body_text_r2_key);
   if (!obj) return j(c, { text: null });
@@ -687,34 +733,10 @@ app.delete('/api/domains/:domain', async c => {
 
 // 从 Cloudflare 同步托管域名列表与 Email Routing 状态（需在设置中配置 CF API Token）
 app.post('/api/domains/sync', async c => {
-  const cfg = await getConfig(c.env);
-  if (!cfg.cf_api_token) return j(c, { error: 'cf_token_missing' }, 400);
-  const token = cfg.cf_api_token;
-  const headers = { Authorization: `Bearer ${token}` };
-  const zones = [];
-  for (let page = 1; page <= 5; page++) {
-    const res = await fetch(`https://api.cloudflare.com/client/v4/zones?per_page=50&page=${page}`, { headers });
-    const data = await res.json().catch(() => ({}));
-    if (!data.success) return j(c, { error: 'cf_api_error', detail: (data.errors || []).map(e => e.message).join('; ') || String(res.status) }, 502);
-    zones.push(...(data.result || []).map(z => ({ id: z.id, name: String(z.name).toLowerCase() })));
-    const total = data.result_info?.total_count || zones.length;
-    if (page >= Math.ceil(total / 50)) break;
-  }
-  const registry = getRegistry(cfg);
-  const manual = registry.filter(e => e.source === 'manual');
-  const cfEntries = [];
-  for (const z of zones) {
-    let er = false;
-    try {
-      const r = await fetch(`https://api.cloudflare.com/client/v4/zones/${z.id}/email/routing`, { headers });
-      const d = await r.json();
-      er = !!(d.result && d.result.enabled);
-    } catch { er = false; }
-    cfEntries.push({ domain: z.name, source: 'cf', email_routing: er, zone_id: z.id, account_id: z.account_id });
-  }
-  if (cfEntries[0]?.account_id) await setConfig(c.env, 'cf_account_id', cfEntries[0].account_id);
-  await setRegistry(c.env, [...cfEntries, ...manual.filter(m => !cfEntries.some(x => x.domain === m.domain))]);
-  return j(c, { ok: true, zones: cfEntries.length, email_routing_on: cfEntries.filter(e => e.email_routing).length });
+  const r = await syncZonesFromCF(c.env);
+  if (r === null) return j(c, { error: 'cf_token_missing' }, 400);
+  if (r.error) return j(c, { error: r.error, detail: r.detail }, 502);
+  return j(c, { ok: true, zones: r.zones, email_routing_on: r.email_routing_on });
 });
 
 // 一键开启转发（§3.4.2 六步流程）：MX 冲突确认 → 启用 → DNS → catch-all → Worker
@@ -923,8 +945,10 @@ app.post('/api/dev/reset', async c => {
 app.onError((err, c) => {
   console.error('[inboxfly] error:', err);
   if (c.req.path.startsWith('/api/')) {
+    // 仅 CF API 类错误带 detail 透出；内部异常一律脱敏
     const status = err.detail ? 502 : 500;
-    return j(c, { error: err.message || 'internal_error', ...(err.detail ? { detail: err.detail } : {}) }, status);
+    const body = err.detail ? { error: 'cf_api_error', detail: err.detail } : { error: 'internal_error' };
+    return j(c, body, status);
   }
   return c.text('Internal Server Error', 500);
 });
@@ -938,8 +962,13 @@ function safeParseJ(s, dflt) {
 export default {
   fetch: app.fetch,
   email: handleEmail,
-  // Cron Trigger：每日清理超过保留期的 R2 对象（§8/§11）
+  // Cron Trigger：每日清理超过保留期的 R2 对象（§8/§11）+ 定时同步 CF 域名（§3.4.1）
   async scheduled(event, env, ctx) {
-    ctx.waitUntil(cleanupExpired(env).catch(e => console.error('[inboxfly] cleanup failed:', e)));
+    ctx.waitUntil(Promise.allSettled([
+      cleanupExpired(env).catch(e => console.error('[inboxfly] cleanup failed:', e)),
+      syncZonesFromCF(env).then(r => {
+        if (r && r.error) console.error('[inboxfly] zone sync failed:', r.error, r.detail || '');
+      }).catch(e => console.error('[inboxfly] zone sync error:', e)),
+    ]));
   },
 };

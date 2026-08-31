@@ -1,5 +1,6 @@
 .dev.vars
 .wrangler/
+**/.wrangler/
 node_modules/
 dist/
 .DS_Store

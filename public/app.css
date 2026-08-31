@@ -290,6 +290,11 @@ body {
 .nav { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: var(--r-item);
   font-size: 13.5px; font-weight: 560; color: var(--text-2); cursor: pointer; user-select: none;
   transition: background 140ms ease; text-decoration: none; }
+/* 导航栏操作按钮（如「同步域名」）：复用 .nav 样式，重置 button 默认外观 */
+.nav.nav-act { border: none; background: transparent; text-align: left; font: inherit; }
+.nav.nav-act:disabled { opacity: .55; cursor: wait; }
+.nav.nav-act:disabled .ic { animation: spin 900ms linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
 .nav:hover { background: var(--accent-soft); }
 .nav:active { transform: scale(.97); transition: transform 100ms ease-out; }
 .nav.on { background: var(--nav-on-bg); color: var(--nav-on-fg); font-weight: 650; }

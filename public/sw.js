@@ -1,5 +1,5 @@
 // InboxFly Service Worker：静态外壳缓存（API 永远走网络，绝不缓存邮件数据）
-const CACHE = 'inboxfly-static-v13';
+const CACHE = 'inboxfly-static-v14';
 
 self.addEventListener('install', e => self.skipWaiting());
 

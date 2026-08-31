@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en" data-mode="light" data-lang="en" data-alt="/zh/docs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Documentazione — InboxFly self-hosted</title>
+<meta name="description" content="Documentazione completa per InboxFly self-hosted: sviluppo locale, deploy su Cloudflare, assistente di configurazione, attivazione del routing email, regole, quote di archiviazione, sicurezza e risoluzione dei problemi.">
+<link rel="icon" href="/assets/favicon.png" type="image/png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0a84ff">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..1000&display=swap" rel="stylesheet">
+<script>try{var m=localStorage.getItem('site-mode');document.documentElement.dataset.mode=m||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');}catch(e){}</script>
+<link rel="stylesheet" href="/assets/style.css?v=14">
+</head>
+<body>
+
+<nav class="nav"><div class="nav-inner">
+  <a class="logo" href="/self-hosted" title="InboxFly"><img src="/assets/logo.svg" alt="InboxFly"></a>
+  <div class="nav-links">
+    <a href="/it/self-hosted#features">Funzionalità</a>
+    <a href="/it/self-hosted#how">Come funziona</a>
+    <a href="/it/docs" style="color:var(--text);font-weight:650;">Documentazione</a>
+    <a href="/it/self-hosted#faq">FAQ</a>
+  </div>
+  <div class="nav-actions">
+    <div class="lang-drop">
+  <button class="lang-btn" aria-label="Language" title="Language">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>
+  </button>
+  <div class="lang-menu">
+    <a href="#" data-l="en">English</a>
+    <a href="#" data-l="zh">简体中文</a>
+    <a href="#" data-l="ja">日本語</a>
+    <a href="#" data-l="ko">한국어</a>
+    <a href="#" data-l="de">Deutsch</a>
+    <a href="#" data-l="fr">Français</a>
+    <a href="#" data-l="it">Italiano</a>
+    <a href="#" data-l="ru">Русский</a>
+    <a href="#" data-l="vi">Tiếng Việt</a>
+  </div>
+</div>
+    <button class="mode-btn" title="切换深浅色" aria-label="切换深浅色">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></svg>
+    </button>
+    <a class="btn btn-primary btn-sm" href="https://panel.inboxfly.email" target="_blank" rel="noopener">打开面板</a>
+  </div>
+
+  <button class="burger" id="nav-burger" aria-label="Menu">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+</div>
+  <div class="mobile-menu" id="mobile-menu">
+  <a href="/it/self-hosted#features">Funzionalità</a>
+  <a href="/it/self-hosted#how">Come funziona</a>
+  <a href="/it/docs">Documentazione</a>
+  <a href="/it/self-hosted#faq">FAQ</a>
+  <div class="mm-actions"><a class="btn btn-primary btn-sm mm-panel" href="https://panel.inboxfly.email" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>Apri il pannello</a>
+</div>
+</nav>
+
+<div class="doc-wrap">
+  <div class="crumb"><a href="/self-hosted">← Torna a InboxFly</a></div>
+  <h1>Documentazione InboxFly</h1>
+  <p class="doc-sub">Guida completa per l’edizione self-hosted (open source · MIT): dalla prova locale alla produzione, gestione quotidiana e configurazione avanzata.</p>
+
+  <div class="toc">
+    <h3>Indice</h3>
+    <ol>
+      <li><a href="#quickstart">Avvio rapido (locale)</a></li>
+      <li><a href="#deploy">Deploy su Cloudflare</a></li>
+      <li><a href="#wizard">Assistente di prima esecuzione</a></li>
+      <li><a href="#routing">Attivare il routing email</a></li>
+      <li><a href="#destinations">Indirizzi di destinazione</a></li>
+      <li><a href="#rules">Regole di routing</a></li>
+      <li><a href="#daily">Gestione quotidiana</a></li>
+      <li><a href="#storage">Archiviazione e quote</a></li>
+      <li><a href="#security">Sicurezza</a></li>
+      <li><a href="#appearance">Temi / lingua / PWA</a></li>
+      <li><a href="#limits">Limiti noti</a></li>
+      <li><a href="#uninstall">Disinstallazione e pulizia</a></li>
+    </ol>
+  </div>
+
+  <h2 id="quickstart">1. Avvio rapido in locale (3 min)</h2>
+  <p>Gli ambienti locali non possono ricevere email reali, ma puoi testare l’intero pannello e la pipeline (dati tramite « Simula »):</p>
+  <pre><code>git clone https://github.com/INBOXFLY-REPO-PLACEHOLDER/inboxfly.git
+cd inboxfly &amp;&amp; npm install
+npm run dev          # 启动在 http://localhost:8787</code></pre>
+  <ul>
+    <li>La prima visita apre l’<strong>assistente di configurazione</strong>; il SETUP_TOKEN locale è <code>inboxfly-local-setup</code> (vedi <code>.dev.vars</code>).</li>
+    <li>Il passaggio 3 dell’assistente (Attiva Email Routing) viene saltato localmente.</li>
+    <li>Nel pannello clicca su <strong>« Simula »</strong>: inserisce email di test tramite esattamente la pipeline di produzione (corrispondenza → filtro → decisione → archiviazione → statistiche), saltando solo la consegna reale.</li>
+    <li>Per reimpostare: <code>rm -rf .wrangler</code> e riavvia, poi rifai l’assistente.</li>
+  </ul>
+
+  <h2 id="deploy">2. Deploy su Cloudflare</h2>
+  <pre><code>npx wrangler login
+npx wrangler deploy           # Worker + 静态面板 + D1 + R2 + KV + Cron
+npx wrangler secret put SETUP_TOKEN    # 首次运行向导用的初始化令牌</code></pre>
+  <ul>
+    <li>Le tabelle D1 vengono <strong>create automaticamente</strong> alla prima visita del pannello — nessun SQL manuale richiesto (o esegui <code>npx wrangler d1 execute inboxfly --remote --file schema.sql</code> come ripiego).</li>
+    <li>Il pannello è per impostazione predefinita a <code>https://inboxfly.&lt;tuo-sottodominio&gt;.workers.dev</code>; collega un dominio personalizzato (es. <code>panel.yourdomain</code>) in Workers → Domains &amp; Routes.</li>
+    <li>Il Cron Trigger (pulizia R2 giornaliera alle 03:00 UTC) viene registrato automaticamente con il deploy.</li>
+    <li><code>robots.txt</code> include <code>Disallow: /</code> così il tuo pannello privato non viene indicizzato.</li>
+  </ul>
+
+  <h2 id="wizard">3. Assistente di prima esecuzione (5 passaggi)</h2>
+  <p>Apri l’URL del pannello dopo il deploy e segui l’assistente. Ogni passaggio spiega « perché » e « rischi »:</p>
+  <ol>
+    <li><strong>Verifica dell’identità del deployer</strong>: inserisci il SETUP_TOKEN (appare solo nell’output del deploy, invalidato dopo la configurazione) per prevenire la presa di controllo.</li>
+    <li><strong>Creare le credenziali admin</strong>: nome utente + password ≥8 caratteri (hash PBKDF2, non recuperabile).</li>
+    <li><strong>Attiva Email Routing</strong>: salta in locale; in produzione segui la guida nel dashboard Cloudflare (sezione successiva).</li>
+    <li><strong>Aggiungi un indirizzo di destinazione</strong>: inserisci la tua vera casella email (es. Gmail) e completa la conferma Cloudflare.</li>
+    <li><strong>Crea la prima regola</strong>: per impostazione predefinita <code>*@yourdomain → inoltra → destinazione verificata</code>, e la imposta come fallback fail-open.</li>
+  </ol>
+
+  <h2 id="routing">4. Attivare il routing email (per dominio)</h2>
+  <p>Tre elementi devono essere presenti: l’<strong>interruttore principale Email Routing</strong>, il <strong>catch-all che punta al Worker</strong> e una <strong>destinazione verificata</strong>. Due modi:</p>
+  <h3>Opzione A · Automazione dal pannello (consigliata)</h3>
+  <p>Dopo aver salvato un <strong>token API CF</strong> in Impostazioni → Domini, appare un pulsante « Attiva inoltro » per dominio. Il pannello: rileva i conflitti MX (li elenca per conferma per record) → attiva Email Routing → aggiunge i record DNS MX/SPF consigliati → punta catch-all al Worker InboxFly.</p>
+  <div class="tip warn"><strong>Permessi del token (testati)</strong>: Account → Workers Scripts / D1 / KV / R2 Storage (Modifica) + Impostazioni account (Lettura); Zone → Zone (Lettura), DNS (Modifica), Email Routing Rules (Modifica), <strong>Zone Settings (Modifica)</strong>. Nota: attivare/interrogare Email Routing richiede il gruppo « Zone Settings », non « Email Routing Rules » — spunta entrambi altrimenti errore Authentication.</div>
+  <h3>Opzione B · Manualmente nel dashboard Cloudflare</h3>
+  <p>Dashboard → zona → Email → Email Routing → Attiva (conferma la sostituzione MX) → Indirizzo catch-all → azione « Send to a Worker » → scegli <code>inboxfly</code>. Aggiorna poi il pannello; tutti i controlli diventano verdi.</p>
+
+  <h2 id="destinations">5. Indirizzi di destinazione</h2>
+  <ul>
+    <li>Aggiungi la tua vera casella email nella pagina Destinazioni → <strong>Cloudflare invia automaticamente un’email di conferma</strong> → appena il destinatario clicca, il pannello passa a « Verificato ».</li>
+    <li>Le destinazioni sono <strong>a livello di account</strong>: verifica una volta, usa ovunque.</li>
+    <li>Il primo indirizzo verificato diventa il <strong>fallback fail-open</strong>: il Worker lo tenta in caso di errori interni per evitare perdite silenziose.</li>
+    <li>Gli indirizzi referenziati dalle regole non possono essere eliminati (ti verrà chiesto di modificare prima la regola).</li>
+  </ul>
+
+  <h2 id="rules">6. Regole di routing</h2>
+  <p>La pagina delle regole rispecchia la pagina di routing nativa di Cloudflare: una tabella unificata con una riga di fallback fissa « 📌 Catch-all » in fondo.</p>
+  <h3>Creare una regola</h3>
+  <ul>
+    <li><strong>Corrispondenza email</strong>: nome a sinistra (es. <code>info</code>, <code>support</code>) + @ + elenco domini a destra; nome vuoto = intero dominio.</li>
+    <li><strong>Azione</strong>: Invia a un’email (inoltra a una destinazione verificata) / Elimina (silenzioso) / Rimbalza (miglioramento InboxFly — rifiuto a livello SMTP, non nativo).</li>
+    <li><strong>Filtri avanzati</strong> (miglioramenti opzionali): blacklist mittente (uno per riga: indirizzo / <code>@dominio</code> / <code>/regex/</code>), regex oggetto, limite dimensione (≤25MB), condizione allegato.</li>
+  </ul>
+  <h3>Ordine di valutazione</h3>
+  <p>Regole esatte → regole catch-all, ordinate nel gruppo, <strong>primo match vince</strong>. Le email non corrisposte vanno alla riga Catch-all (inoltra per default / rimbalza / elimina).</p>
+  <div class="tip warn"><strong>Importante</strong>: non creare regole di routing manualmente nel dashboard Cloudflare — le regole native hanno precedenza su catch-all e bypassano InboxFly (niente copie, niente statistiche). Importa le regole native esistenti tramite Impostazioni → Domini.</div>
+
+  <h2 id="daily">7. Gestione quotidiana</h2>
+  <ul>
+    <li><strong>Elenco email</strong>: filtro per dominio / stato / parola chiave; eliminazione batch multi-selezione supportata.</li>
+    <li><strong>Dettaglio email</strong>: rendering HTML sandbox (immagini remote bloccate), visualizzazione testo, download allegati, MIME grezzo (.eml).</li>
+    <li><strong>Statistiche</strong>: per stato (inoltrata/bloccata/eliminata/rimbalzata/errore) e dominio, con tendenze a 14 giorni. « Inoltrata » = Cloudflare ha accettato l’inoltro; il posizionamento finale non è osservabile.</li>
+    <li><strong>Layout</strong>: il pulsante in alto a destra alterna modalità barra laterale / intestazione; il mobile usa sempre il layout intestazione.</li>
+  </ul>
+
+  <h2 id="storage">8. Archiviazione e quote</h2>
+  <ul>
+    <li>Le copie (HTML/testo/MIME grezzo) e gli allegati vivono nel <strong>tuo R2</strong>, conservati <strong>30 giorni</strong> per default con pulizia automatica giornaliera alle 03:00 UTC (regolabile in Impostazioni; pulizia manuale disponibile).</li>
+    <li>Le email bloccate dai filtri archiviano <strong>solo metadati</strong> per default (anti-tempesta di spam); attiva i corpi completi se serve.</li>
+    <li>Un banner di avviso appare quando la stima R2 a 30 giorni supera 9GB, con passaggio in un clic alla modalità solo metadati (inoltro invariato).</li>
+  </ul>
+
+  <h2 id="security">9. Sicurezza</h2>
+  <ul>
+    <li><strong>Cloudflare Turnstile</strong>: Impostazioni → Protezione anti-bot, incolla le chiavi Site/Secret e attiva — appare una verifica umana al login (siteverify lato server). Per i test locali, chiavi di test ufficiali: Site <code>1x00000000000000000000AA</code> / Secret <code>1x0000000000000000000000000000000AA</code> (sempre valido).</li>
+    <li><strong>Account admin</strong>: Impostazioni → Account admin; cambiare nome/password invalida tutte le altre sessioni.</li>
+    <li><strong>Sessioni</strong>: 24h per default, 30 giorni con « rimani connesso »; protezione CSRF sulle modifiche, login limitato.</li>
+    <li><strong>Sicurezza del contenuto</strong>: i corpi sono renderizzati in una sandbox iframe (script disattivati), la sanificazione server rimuove il markup pericoloso, immagini remote bloccate per default.</li>
+  </ul>
+
+  <h2 id="appearance">10. Temi / lingua / PWA</h2>
+  <ul>
+    <li><strong>3 temi × chiaro/scuro</strong>: Fluid Glass (default) / Minimal / Playful, ognuno con variante scura completa; segue il sistema per default.</li>
+    <li><strong>10 lingue</strong>: rilevamento automatico dal browser; cambio in qualsiasi momento tramite l’icona globo.</li>
+    <li><strong>Installazione PWA</strong>: Android Chrome → menu « Installa app » (o pulsante Impostazioni); iOS Safari → Condividi → « Aggiungi a schermata Home ».</li>
+  </ul>
+
+  <h2 id="limits">11. Limiti noti</h2>
+  <ul>
+    <li>Il locale non può ricevere email reali (Email Routing è una funzionalità di produzione) — usa « Simula » in locale.</li>
+    <li>« Inoltrata » significa che Cloudflare l’ha accettata; il posizionamento nella cartella spam non è osservabile. Metti il tuo dominio in whitelist nella casella del destinatario se serve.</li>
+    <li>Non mescolare regole native Cloudflare e InboxFly sullo stesso dominio (bypassano il pannello); la coesistenza a livello di zona è senza problemi.</li>
+    <li>25MiB per messaggio (limite della piattaforma Cloudflare).</li>
+  </ul>
+
+  <h2 id="uninstall">12. Disinstallazione e pulizia</h2>
+  <ol>
+    <li>Revoca il token API CF del pannello (dashboard → Token API) — la pipeline di inoltro funziona indipendentemente nel tuo account e continua; l’automazione del pannello si degrada.</li>
+    <li>Fermare l’inoltro: dashboard → Email Routing → disattiva Catch-all o l’intero servizio.</li>
+    <li>Elimina le risorse: Workers → inboxfly; D1 → inboxfly; R2 → inboxfly; KV → il namespace.</li>
+  </ol>
+
+  <div class="tip">Se qualcosa non è coperto qui, apri un ticket GitHub (link del repo sulla pagina prodotto).</div>
+</div>
+
+<footer class="footer"><div class="footer-inner">
+  <div class="col" style="max-width:300px;">
+    <div class="brandline"><img src="/assets/logo-email.svg" alt="InboxFly" title="InboxFly"></div>
+    <p style="font-weight:700;font-size:14px;letter-spacing:-.01em;margin-bottom:8px;">Le tue email. Il tuo Cloudflare. Un pannello.</p>
+    <p style="font-size:13px;color:var(--text-2);">Il pannello di gestione open source per Cloudflare Email Routing.</p>
+  </div>
+  <div class="col">
+    <h4>Prodotto</h4>
+    <a href="https://panel.inboxfly.email" target="_blank" rel="noopener">Apri il pannello</a>
+    <a href="/it/self-hosted">Self-hosted</a>
+    <a href="#" title="GitHub repo coming soon">GitHub</a>
+  </div>
+  <div class="col">
+    <h4>Risorse</h4>
+    <a href="/it/docs">Documentazione</a>
+    <a href="#features">Funzionalità</a>
+    <a href="#how">Come funziona</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <div class="col"><h4>Azienda</h4><a href="/it/about">Chi siamo</a><a href="/it/terms">Termini</a><a href="/it/privacy">Privacy</a><a href="mailto:support@inboxfly.email">support@inboxfly.email</a></div>
+</div></footer>
+<div class="copy">© 2026 InboxFly — open source under MIT</div>
+
+<script src="/assets/landing.js?v=6"></script>
+</body>
+</html>

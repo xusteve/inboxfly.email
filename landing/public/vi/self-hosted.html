@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="vi" data-mode="light" data-lang="vi" data-alt="/self-hosted">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>InboxFly - Chuyển tiếp email tự lưu trữ & quản lý định tuyến email Cloudflare | Mã nguồn mở</title>
+<meta name="keywords" content="chuyển tiếp email tự lưu trữ, định tuyến email Cloudflare, quản lý chuyển tiếp email, công cụ chuyển tiếp email mã nguồn mở">
+<meta name="description" content="Bảng điều khiển còn thiếu của Cloudflare Email Routing. Quy tắc, bản sao đầy đủ, tệp đính kèm và thống kê — trong tài khoản Cloudflare của riêng bạn. Miễn phí · MIT.">
+<link rel="icon" href="/assets/favicon.png" type="image/png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="InboxFly">
+<meta property="og:title" content="InboxFly - Chuyển tiếp email tự lưu trữ & quản lý định tuyến email Cloudflare | Mã nguồn mở">
+<meta property="og:description" content="Bảng điều khiển còn thiếu của Cloudflare Email Routing. Quy tắc, bản sao đầy đủ, tệp đính kèm và thống kê — trong tài khoản Cloudflare của riêng bạn. Miễn phí · MIT.">
+<meta property="og:url" content="https://inboxfly.email/vi/self-hosted">
+<meta property="og:image" content="https://inboxfly.email/assets/logo-512.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="InboxFly - Chuyển tiếp email tự lưu trữ & quản lý định tuyến email Cloudflare | Mã nguồn mở">
+<meta name="twitter:description" content="Open-source email forwarding manager for Cloudflare Email Routing.">
+<meta name="twitter:image" content="https://inboxfly.email/assets/logo-512.png">
+<link rel="canonical" href="https://inboxfly.email/vi/self-hosted">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"InboxFly","applicationCategory":"DeveloperApplication","operatingSystem":"Web","url":"https://inboxfly.email/vi/self-hosted","description":"Trình quản lý chuyển tiếp email mã nguồn mở cho Cloudflare Email Routing.","isAccessibleForFree":true,"license":"https://opensource.org/licenses/MIT","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+</script>
+<meta name="theme-color" content="#0a84ff">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..1000&display=swap" rel="stylesheet">
+<script>try{var m=localStorage.getItem('site-mode');document.documentElement.dataset.mode=m||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');}catch(e){}</script>
+<link rel="stylesheet" href="/assets/style.css?v=14">
+</head>
+<body>
+
+<nav class="nav"><div class="nav-inner">
+  <a class="logo" href="/vi/self-hosted" title="InboxFly"><img src="/assets/logo.svg" alt="InboxFly"></a>
+  <div class="nav-links">
+    <a href="/vi/self-hosted#features">Tính năng</a>
+    <a href="/vi/self-hosted#how">Cách hoạt động</a>
+    <a href="/vi/docs">Tài liệu</a>
+    
+  <a href="/vi/self-hosted#faq">Câu hỏi thường gặp</a>
+  </div>
+  <div class="nav-actions">
+    <div class="lang-drop">
+  <button class="lang-btn" aria-label="Language" title="Language">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>
+  </button>
+  <div class="lang-menu">
+    <a href="#" data-l="en">English</a><a href="#" data-l="zh">简体中文</a><a href="#" data-l="ja">日本語</a><a href="#" data-l="ko">한국어</a><a href="#" data-l="de">Deutsch</a><a href="#" data-l="fr">Français</a><a href="#" data-l="it">Italiano</a><a href="#" data-l="ru">Русский</a><a href="#" data-l="vi">Tiếng Việt</a>
+  </div>
+</div>
+    <button class="mode-btn" aria-label="Toggle theme">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></svg>
+    </button>
+    <a class="btn btn-primary btn-sm" href="https://panel.inboxfly.email" target="_blank" rel="noopener">Mở bảng điều khiển</a>
+  </div>
+  <button class="burger" id="nav-burger" aria-label="Menu">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+</div>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="/vi/self-hosted#features">Tính năng</a>
+  <a href="/vi/self-hosted#how">Cách hoạt động</a>
+  <a href="/vi/docs">Tài liệu</a>
+  <a href="/vi/self-hosted#faq">Câu hỏi thường gặp</a>
+  <div class="mm-actions"><a class="btn btn-primary btn-sm mm-panel" href="https://panel.inboxfly.email" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>Mở bảng điều khiển</a>
+</div>
+</nav>
+
+<header class="hero wrap">
+  <div class="eyebrow">Mã nguồn mở · Giấy phép MIT</div>
+  <h1 class="display">Chuyển tiếp email tự lưu trữ, cuối cùng cũng <span class="accent">được quản lý</span>.</h1>
+  <p class="sub"><span class="wavy">Quản lý định tuyến email Cloudflare tại một nơi.</span></p>
+  <div class="cta-row">
+    <a class="btn btn-primary btn-wide" href="#" title="Kho GitHub sắp ra mắt">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v14m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+      Triển khai lên Cloudflare
+    </a>
+    <a class="btn btn-ghost btn-wide" href="https://panel.inboxfly.email" target="_blank" rel="noopener"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>Mở bảng điều khiển</a>
+  </div>
+  <div class="micro">Miễn phí · MIT · Không cần thẻ · Dữ liệu nằm trong tài khoản của bạn</div>
+  <div class="avatars">
+    <span class="st"><i style="background:#5e5ce6">G</i><i style="background:#0a84ff">S</i><i style="background:#ff9f0a">M</i><i style="background:#30d158">V</i><i style="background:#e16540">+</i></span>
+    Đang xử lý email thật trên inboxfly.email
+  </div>
+
+  <div class="mac-wrap">
+    <div class="mac">
+      <div class="mac-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="url">panel.inboxfly.email/#/mail</span></div>
+      <div class="mac-body">
+        <img class="demo-light" src="/assets/DEMO_Light-InboxFly.webp" alt="InboxFly panel — light" loading="lazy">
+        <img class="demo-dark" src="/assets/DEMO_Dark-InboxFly.webp" alt="InboxFly panel — dark" loading="lazy">
+      </div>
+    </div>
+    <div class="mac-fade"></div>
+  </div>
+</header>
+
+<section class="sec" id="how">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">Cách hoạt động</div>
+      <h2>Chuyển tiếp được quản lý trong 3 bước</h2>
+      <p>Không cần máy chủ. Mọi thứ chạy trong gói miễn phí Cloudflare, trong tài khoản của bạn.</p>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="no">1</div><h3>Triển khai lên Cloudflare</h3><p>Một cú nhấp triển khai Worker, cơ sở dữ liệu và lưu trữ vào tài khoản của bạn. Dữ liệu không bao giờ rời khỏi tầm kiểm soát.</p></div>
+      <div class="step"><div class="no">2</div><h3>Kết nối tên miền</h3><p>Bật Email Routing, xác minh địa chỉ đích, trỏ catch-all tới Worker InboxFly.</p></div>
+      <div class="step"><div class="no">3</div><h3>Email được quản lý</h3><p>Mọi email đến đều được chuyển tiếp, lưu bản sao đầy đủ, tìm kiếm được và thống kê.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="features">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">Tính năng</div>
+      <h2>Mọi thứ Cloudflare Email Routing còn thiếu</h2>
+      <p>Quy tắc theo thiết kế Cloudflare, cộng lớp quản lý chưa từng có.</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M6 12h12M9 18h6"/></svg></div><h3>Quy tắc định tuyến (chuẩn CF)</h3><p>Địa chỉ chính xác và ký tự đại diện tên miền với dự phòng Catch-all — cùng thiết kế trang quy tắc Cloudflare.</p></div>
+      <div class="feat"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18Z"/></svg></div><h3>10 ngôn ngữ</h3><p>English·Tiếng Việt·Français·Deutsch·Italiano·日本語·한국어·简体中文·繁體中文·Русский.</p></div>
+      <div class="feat"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4"/></svg></div><h3>3 giao diện × sáng/tối</h3><p>Fluid Glass, Minimal và Playful — mỗi giao diện có bản tối đầy đủ.</p></div>
+      <div class="feat"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v13H3V8M1 3h22v5H1zM10 12h4"/></svg></div><h3>Bản sao đầy đủ & tệp đính kèm</h3><p>HTML, MIME gốc và tệp đính kèm trong R2 của bạn — tải xuống bất cứ lúc nào.</p></div>
+      <div class="feat"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20V10M12 20V4M19 20v-7"/></svg></div><h3>Thống kê có ý nghĩa</h3><p>Đã chuyển, chặn, bỏ, trả lại, lỗi — theo quy tắc và tên miền.</p></div>
+      <div class="feat"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></div><h3>Bảo mật tích hợp</h3><p>Turnstile, băm PBKDF2, kết xuất HTML sandbox và bảo vệ CSRF.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <div class="vs-wrap">
+      <div class="panel vs-card" style="background:var(--surface);">
+        <h3>🌩 Cloudflare Email Routing cung cấp</h3>
+        <ul>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Chuyển tiếp email tên miền miễn phí</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Catch-all và quy tắc địa chỉ đơn giản</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Hạ tầng đẳng cấp thế giới, không máy chủ</li>
+        </ul>
+      </div>
+      <div class="panel vs-card">
+        <h3>✨ InboxFly bổ sung</h3>
+        <ul>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Bảng điều khiển thực sự — không cần thao tác dashboard</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Bản sao đầy đủ: HTML, MIME gốc, tệp<span class="tag">nâng cấp</span><span class="tag">enhancement</span></li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Hành động trả lại — từ chối cấp SMTP<span class="tag">nâng cấp</span><span class="tag">enhancement</span></li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Danh sách đen người gửi, bộ lọc tiêu đề & kích thước<span class="tag">nâng cấp</span><span class="tag">enhancement</span></li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Tìm kiếm, thao tác hàng loạt, thống kê theo quy tắc<span class="tag">nâng cấp</span><span class="tag">enhancement</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="faq">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">FAQ</div>
+      <h2>Câu hỏi thường gặp</h2>
+    </div>
+    <div class="faq">
+      <details open><summary>Dữ liệu của tôi nằm ở đâu?</summary><p>Trong tài khoản Cloudflare của bạn — D1, R2 và Worker thuộc về bạn. Bảng điều khiển chỉ là giao diện; thu hồi quyền API và dữ liệu vẫn ở đó.</p></details>
+      <details open><summary>Chi phí là bao nhiêu?</summary><p>Phần mềm miễn phí (MIT). Mọi thứ chạy trong gói miễn phí Cloudflare: 100k yêu cầu Worker/ngày, D1 5GB, R2 10GB, Email Routing miễn phí.</p></details>
+      <details open><summary>Email chuyển tiếp có vào thư rác không?</summary><p>Cloudflare chuyển tiếp qua hạ tầng riêng với SPF căn chỉnh. Vị trí cuối trong hộp thư không thể quan sát bởi bất kỳ dịch vụ chuyển tiếp nào.</p></details>
+      <details open><summary>Tôi có cần giao email cho InboxFly không?</summary><p>Không. Sau khi triển khai, email đi thẳng qua Worker trong tài khoản của bạn. Thu hồi token bảng điều khiển và chuyển tiếp vẫn hoạt động.</p></details>
+      <details open><summary>Cloud so với tự lưu trữ?</summary><p>Tự lưu trữ (trang này) miễn phí trong tài khoản của bạn. InboxFly Cloud (kèm phân tích AI) sắp ra mắt.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap" style="text-align:center;">
+    <div class="eyebrow" style="justify-content:center;">Bắt đầu</div>
+    <h2 class="display" style="font-size:clamp(28px,4vw,44px);">Tên miền của bạn xứng đáng<br>một trình quản lý hộp thư thực sự.</h2>
+    <div class="cta-row">
+      <a class="btn btn-primary btn-wide" href="#">Triển khai lên Cloudflare</a>
+      <a class="btn btn-ghost btn-wide" href="https://panel.inboxfly.email" target="_blank" rel="noopener"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>Mở bảng điều khiển trực tiếp</a>
+    </div>
+    <div class="micro">Miễn phí · MIT · Cloudflare của bạn, dữ liệu của bạn</div>
+  </div>
+</section>
+
+<footer class="footer"><div class="footer-inner">
+  <div class="col" style="max-width:300px;">
+    <div class="brandline"><img src="/assets/logo-email.svg" alt="InboxFly" title="InboxFly"></div>
+    <p style="font-weight:700;font-size:14px;letter-spacing:-.01em;margin-bottom:8px;">Email của bạn. Cloudflare của bạn. Một bảng điều khiển.</p>
+    <p style="font-size:13px;color:var(--text-2);">Bảng điều khiển mã nguồn mở cho Cloudflare Email Routing.</p>
+  </div>
+  <div class="col">
+    <h4>Sản phẩm</h4>
+    <a href="https://panel.inboxfly.email" target="_blank" rel="noopener">Mở bảng điều khiển</a>
+    <a href="/vi/self-hosted">Tự lưu trữ</a>
+    <a href="#" title="GitHub repo coming soon">GitHub</a>
+  </div>
+  <div class="col">
+    <h4>Tài nguyên</h4>
+    <a href="/vi/docs">Tài liệu</a>
+    <a href="#features">Tính năng</a>
+    <a href="#how">Cách hoạt động</a>
+    <a href="#faq">Câu hỏi thường gặp</a>
+  </div>
+  <div class="col"><h4>Công ty</h4><a href="/vi/about">Về chúng tôi</a><a href="/vi/terms">Điều khoản</a><a href="/vi/privacy">Quyền riêng tư</a><a href="mailto:support@inboxfly.email">support@inboxfly.email</a></div>
+</div></footer>
+<div class="copy">© 2026 InboxFly — mã nguồn mở theo MIT</div>
+
+<script src="/assets/landing.js?v=6"></script>
+</body>
+</html>

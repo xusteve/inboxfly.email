@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en" data-mode="light" data-lang="en" data-alt="/zh/articles/self-hosted-email-forwarding-guide">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Email Forwarding with Cloudflare Workers: A Technical Deep Dive | InboxFly</title>
+<meta name="description" content="How Cloudflare Email Workers handle inbound mail at the edge — parsing, forwarding, storage and filtering — with the classic pitfalls to avoid.">
+<meta name="keywords" content="email forwarding with Cloudflare Worker, Cloudflare Email Workers, self-hosted email forwarding Cloudflare, email forwarding management">
+<link rel="icon" href="/assets/favicon.png" type="image/png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="InboxFly">
+<meta property="og:title" content="Email Forwarding with Cloudflare Workers: A Technical Deep Dive | InboxFly">
+<meta property="og:description" content="How Cloudflare Email Workers handle inbound mail at the edge — parsing, forwarding, storage and filtering — with the classic pitfalls to avoid.">
+<meta property="og:url" content="https://inboxfly.email/articles/email-forwarding-with-cloudflare-workers">
+<meta property="og:image" content="https://inboxfly.email/assets/logo-512.png">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="https://inboxfly.email/articles/email-forwarding-with-cloudflare-workers">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Email Forwarding with Cloudflare Workers: A Technical Deep Dive", "description": "How Cloudflare Email Workers process inbound mail at the edge, with pipeline order and pitfalls.", "url": "https://inboxfly.email/articles/email-forwarding-with-cloudflare-workers", "author": {"@type": "Organization", "name": "InboxFly"}, "publisher": {"@type": "Organization", "name": "InboxFly"}}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..1000&display=swap" rel="stylesheet">
+<script>try{var m=localStorage.getItem('site-mode');document.documentElement.dataset.mode=m||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');}catch(e){}</script>
+<link rel="stylesheet" href="/assets/style.css?v=14">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is the message size limit?", "acceptedAnswer": {"@type": "Answer", "text": "25MiB per message, enforced by the platform."}}, {"@type": "Question", "name": "Can I reject mail at SMTP level?", "acceptedAnswer": {"@type": "Answer", "text": "Yes — setReject bounces with a custom reason, which Cloudflare’s dashboard rules cannot do."}}]}</script>
+</head>
+<body>
+
+<nav class="nav"><div class="nav-inner">
+  <a class="logo" href="/self-hosted" title="InboxFly"><img src="/assets/logo.svg" alt="InboxFly"></a>
+  <div class="nav-links">
+    <a href="/self-hosted#features">Features</a>
+    <a href="/self-hosted#how">How it works</a>
+    <a href="/articles" style="color:var(--text);font-weight:650;">Articles</a>
+    <a href="/docs">Docs</a>
+    <a href="/self-hosted#faq">FAQ</a>
+  </div>
+  <div class="nav-actions">
+    <div class="lang-drop">
+  <button class="lang-btn" aria-label="Language" title="Language">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>
+  </button>
+  <div class="lang-menu">
+    <a href="#" data-l="en">English</a>
+    <a href="#" data-l="zh">简体中文</a>
+    <a href="#" data-l="ja">日本語</a>
+    <a href="#" data-l="ko">한국어</a>
+    <a href="#" data-l="de">Deutsch</a>
+    <a href="#" data-l="fr">Français</a>
+    <a href="#" data-l="it">Italiano</a>
+    <a href="#" data-l="ru">Русский</a>
+    <a href="#" data-l="vi">Tiếng Việt</a>
+  </div>
+</div>
+    <button class="mode-btn" aria-label="Toggle theme">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></svg>
+    </button>
+    <a class="btn btn-primary btn-sm" href="https://panel.inboxfly.email" target="_blank" rel="noopener">Open panel</a>
+  </div>
+  <button class="burger" id="nav-burger" aria-label="Menu">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+</div>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="/self-hosted#features">Features</a>
+  <a href="/self-hosted#how">How it works</a>
+  <a href="/articles">Articles</a>
+  <a href="/docs">Docs</a>
+  <a href="/self-hosted#faq">FAQ</a>
+  <div class="mm-actions"><a class="btn btn-primary btn-sm mm-panel" href="https://panel.inboxfly.email" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>Open panel</a>
+</div>
+</nav>
+
+<div class="doc-wrap">
+  <div class="crumb"><a href="/articles">← Articles</a></div>
+  <h1>Email Forwarding with Cloudflare Workers: A Technical Deep Dive</h1>
+  <p class="doc-sub">How Cloudflare Email Workers handle inbound mail at the edge — parsing, forwarding, storage and filtering — with the classic pitfalls to avoid.</p>
+  <div class="art-body">
+<p>Email Workers are Cloudflare’s answer to handling inbound mail at the edge. Instead of an SMTP server, you write a handler that receives the raw message, decides what to do, and calls <code>message.forward()</code> or <code>message.setReject()</code>. Here is how the pieces fit together.</p>
+<h2>The event model</h2>
+<ul>
+<li>Email Routing delivers every catch-all message to your Worker as an <code>email</code> event.</li>
+<li>The event must be handled <strong>synchronously</strong> — you cannot defer the forward to a queue.</li>
+<li>You have <code>message.raw</code> (the full MIME), plus helpers to forward or reject.</li>
+</ul>
+<h2>Pipeline order matters</h2>
+<ol>
+<li><strong>Parse</strong> — use a MIME parser like postal-mime; attachments stream out to R2 so large messages don’t sit in memory.</li>
+<li><strong>Match rules</strong> — exact addresses first, then catch-all; first match wins.</li>
+<li><strong>Apply filters</strong> — sender blacklist, subject regex, size cap, attachment condition.</li>
+<li><strong>Forward</strong> — <code>await message.forward(dest)</code> per destination, each in its own try/catch.</li>
+<li><strong>Store</strong> — R2 copy + D1 metadata, <em>independent</em> of the forward result.</li>
+</ol>
+<h2>Pitfalls to avoid</h2>
+<ul>
+<li><strong>Silent drops</strong> — if your Worker throws before forwarding, the email vanishes. Wrap the whole handler in a fail-open fallback: try the default forward address, otherwise reject with 451 so the sender retries.</li>
+<li><strong>Unverified destinations</strong> — <code>forward()</code> only delivers to addresses verified in Email Routing; the confirmation email cannot be automated.</li>
+<li><strong>ReDoS via filters</strong> — if users supply regexes, cap their length and complexity.</li>
+<li><strong>Remote images</strong> — HTML bodies can track opens; sanitize and block remote images by default.</li>
+</ul>
+<h2>Beyond the raw Worker</h2>
+<p>Raw Workers are a good foundation, but management needs a panel: editable rules, searchable archives, per-rule stats. <a href="/self-hosted">InboxFly</a> wraps this exact pipeline (parse → match → filter → forward → store) in a self-hosted panel you deploy to your own account.</p>
+<h2>FAQ</h2>
+<p><strong>What is the message size limit?</strong> 25MiB per message, enforced by the platform.</p>
+<p><strong>Can I reject mail at SMTP level?</strong> Yes — <code>setReject</code> bounces with a custom reason, which Cloudflare’s dashboard rules cannot do.</p>
+  </div>
+  <div class="art-cta">
+    <a class="btn btn-primary" href="https://panel.inboxfly.email" target="_blank" rel="noopener">Open panel</a>
+    <a class="btn btn-ghost" href="/self-hosted">About InboxFly</a>
+  </div>
+</div>
+
+<footer class="footer"><div class="footer-inner">
+  <div class="col" style="max-width:300px;">
+    <div class="brandline"><img src="/assets/logo-email.svg" alt="InboxFly" title="InboxFly"></div>
+    <p style="font-weight:700;font-size:14px;letter-spacing:-.01em;margin-bottom:8px;">Your mail. Your Cloudflare. One panel.</p>
+    <p style="font-size:13px;color:var(--text-2);">The open-source management panel for Cloudflare Email Routing. Built for people who run their mail on their own account.</p>
+  </div>
+  <div class="col">
+    <h4>Product</h4>
+    <a href="https://panel.inboxfly.email" target="_blank" rel="noopener">Open panel</a>
+    <a href="/self-hosted">Self-hosted</a>
+    <a href="#" title="GitHub repo coming soon">GitHub</a>
+  </div>
+  <div class="col">
+    <h4>Resources</h4>
+    <a href="/docs">Documentation</a>
+    <a href="#features">Features</a>
+    <a href="#how">How it works</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <div class="col"><h4>Company</h4><a href="/about">About</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="mailto:support@inboxfly.email">support@inboxfly.email</a></div>
+</div></footer>
+<div class="copy">© 2026 InboxFly — open source under MIT</div>
+
+<script>window.addEventListener("load",()=>{navigator.serviceWorker&&navigator.serviceWorker.register("/sw.js").catch(()=>{})});</script>
+<script src="/assets/landing.js?v=6"></script>
+</body>
+</html>

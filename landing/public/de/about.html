@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="de" data-mode="light" data-lang="de" data-alt="/about">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Über InboxFly — Open-Source-Mailweiterleitung für Cloudflare</title>
+<meta name="description" content="Das Open-Source-Mailweiterleitungstool für Cloudflare Email Routing. Selbst gehostet, MIT-Lizenz, Daten bleiben in deinem Cloudflare-Konto.">
+<link rel="icon" href="/assets/favicon.png" type="image/png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="InboxFly">
+<meta property="og:title" content="Über InboxFly — Open-Source-Mailweiterleitung für Cloudflare">
+<meta property="og:description" content="Das Open-Source-Mailweiterleitungstool für Cloudflare Email Routing. Selbst gehostet, MIT-Lizenz, Daten bleiben in deinem Cloudflare-Konto.">
+<meta property="og:url" content="https://inboxfly.email/de/about">
+<meta property="og:image" content="https://inboxfly.email/assets/logo-512.png">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="https://inboxfly.email/de/about">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..1000&display=swap" rel="stylesheet">
+<script>try{var m=localStorage.getItem('site-mode');document.documentElement.dataset.mode=m||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');}catch(e){}</script>
+<link rel="stylesheet" href="/assets/style.css?v=14">
+</head>
+<body>
+<nav class="nav"><div class="nav-inner">
+  <a class="logo" href="/de/self-hosted" title="InboxFly"><img src="/assets/logo.svg" alt="InboxFly"></a>
+  <div class="nav-links">
+    <a href="/de/self-hosted#features">Funktionen</a>
+    <a href="/de/self-hosted#how">So funktioniert es</a>
+    <a href="/de/docs">Dokumentation</a>
+    <a href="/de/self-hosted#faq">FAQ</a>
+  </div>
+  <div class="nav-actions">
+    <div class="lang-drop">
+  <button class="lang-btn" aria-label="Language" title="Language">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>
+  </button>
+  <div class="lang-menu">
+    <a href="#" data-l="en">English</a><a href="#" data-l="zh">简体中文</a><a href="#" data-l="ja">日本語</a><a href="#" data-l="ko">한국어</a><a href="#" data-l="de">Deutsch</a><a href="#" data-l="fr">Français</a><a href="#" data-l="it">Italiano</a><a href="#" data-l="ru">Русский</a><a href="#" data-l="vi">Tiếng Việt</a>
+  </div>
+</div>
+    <button class="mode-btn" aria-label="Theme">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></svg>
+    </button>
+    <a class="btn btn-primary btn-sm" href="https://panel.inboxfly.email" target="_blank" rel="noopener">Panel öffnen</a>
+  </div>
+  <button class="burger" id="nav-burger" aria-label="Menu"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+</div>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="/de/self-hosted#features">Funktionen</a><a href="/de/self-hosted#how">So funktioniert es</a><a href="/de/docs">Dokumentation</a><a href="/de/self-hosted#faq">FAQ</a>
+  <div class="mm-actions"><a class="btn btn-primary btn-sm mm-panel" href="https://panel.inboxfly.email" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>Panel öffnen</a>
+</div>
+</nav>
+<div class="doc-wrap">
+  <div class="crumb"><a href="/de/self-hosted">← Start</a></div>
+  <h1>Über InboxFly</h1>
+  <div class="art-body">
+<h2>Was ist InboxFly?</h2><p>InboxFly ist ein <strong>Open-Source-Verwaltungstool für die E-Mail-Weiterleitung</strong> über <strong>Cloudflare Email Routing</strong>. Es schließt die Lücke in Cloudflares kostenloser Weiterleitung: ein echtes Panel mit Regeln, vollständigen Kopien, Anhängen, Suche und Statistiken pro Regel.</p><h2>Warum wir es gebaut haben</h2><p>Cloudflare Email Routing leitet kostenlos weiter, bietet aber keine Verwaltungsoberfläche. InboxFly schließt diese Lücke. Ein Grundsatz: <strong>Deine E-Mails bleiben in deinem Cloudflare-Konto</strong>.</p><h2>Grundsätze</h2><ul><li><strong>Open Source</strong> — MIT. Prüfbar und frei selbst zu hosten.</li><li><strong>Dateneigentum</strong> — D1, R2 und Worker liegen in deinem Konto. InboxFly speichert keine E-Mail-Inhalte.</li><li><strong>Datenschutz zuerst</strong> — Tracking-Pixel werden standardmäßig blockiert.</li><li><strong>Kostenlos starten</strong> — funktioniert mit dem kostenlosen Cloudflare-Plan.</li></ul><h2>Kontakt</h2><p>Fragen, Feedback und Sicherheitsmeldungen: <a href="mailto:support@inboxfly.email">support@inboxfly.email</a>.</p>
+  </div>
+</div>
+<footer class="footer"><div class="footer-inner">
+  <div class="col" style="max-width:300px;">
+    <div class="brandline"><img src="/assets/logo-email.svg" alt="InboxFly" title="InboxFly"></div>
+    <p style="font-weight:700;font-size:14px;letter-spacing:-.01em;margin-bottom:8px;">Deine E-Mails. Dein Cloudflare. Ein Panel.</p>
+    <p style="font-size:13px;color:var(--text-2);">Das Open-Source-Verwaltungspanel für Cloudflare Email Routing.</p>
+  </div>
+  <div class="col">
+    <h4>Produkt</h4>
+    <a href="https://panel.inboxfly.email" target="_blank" rel="noopener">Panel öffnen</a>
+    <a href="/de/self-hosted">Self-hosted</a>
+    <a href="#" title="GitHub repo coming soon">GitHub</a>
+  </div>
+  <div class="col">
+    <h4>Ressourcen</h4>
+    <a href="/de/docs">Dokumentation</a>
+    <a href="#features">Funktionen</a>
+    <a href="#how">So funktioniert es</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <div class="col"><h4>Unternehmen</h4><a href="/de/about">Über uns</a><a href="/de/terms">Nutzungsbedingungen</a><a href="/de/privacy">Datenschutz</a><a href="mailto:support@inboxfly.email">support@inboxfly.email</a></div>
+</div></footer>
+<div class="copy">© 2026 InboxFly — Open Source unter MIT</div>
+<script>window.addEventListener("load",()=>{navigator.serviceWorker&&navigator.serviceWorker.register("/sw.js").catch(()=>{})});</script>
+<script src="/assets/landing.js?v=6"></script>
+</body>
+</html>

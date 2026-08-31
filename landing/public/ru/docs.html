@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en" data-mode="light" data-lang="en" data-alt="/zh/docs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Документация — InboxFly (самостоятельный хостинг)</title>
+<meta name="description" content="Полная документация InboxFly: локальная разработка, развёртывание на Cloudflare, мастер настройки, маршрутизация почты, правила, хранилище, безопасность и устранение неполадок.">
+<link rel="icon" href="/assets/favicon.png" type="image/png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0a84ff">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..1000&display=swap" rel="stylesheet">
+<script>try{var m=localStorage.getItem('site-mode');document.documentElement.dataset.mode=m||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');}catch(e){}</script>
+<link rel="stylesheet" href="/assets/style.css?v=14">
+</head>
+<body>
+
+<nav class="nav"><div class="nav-inner">
+  <a class="logo" href="/self-hosted" title="InboxFly"><img src="/assets/logo.svg" alt="InboxFly"></a>
+  <div class="nav-links">
+    <a href="/ru/self-hosted#features">Возможности</a>
+    <a href="/ru/self-hosted#how">Как это работает</a>
+    <a href="/ru/docs" style="color:var(--text);font-weight:650;">Документация</a>
+    <a href="/ru/self-hosted#faq">FAQ</a>
+  </div>
+  <div class="nav-actions">
+    <div class="lang-drop">
+  <button class="lang-btn" aria-label="Language" title="Language">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>
+  </button>
+  <div class="lang-menu">
+    <a href="#" data-l="en">English</a>
+    <a href="#" data-l="zh">简体中文</a>
+    <a href="#" data-l="ja">日本語</a>
+    <a href="#" data-l="ko">한국어</a>
+    <a href="#" data-l="de">Deutsch</a>
+    <a href="#" data-l="fr">Français</a>
+    <a href="#" data-l="it">Italiano</a>
+    <a href="#" data-l="ru">Русский</a>
+    <a href="#" data-l="vi">Tiếng Việt</a>
+  </div>
+</div>
+    <button class="mode-btn" title="切换深浅色" aria-label="切换深浅色">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></svg>
+    </button>
+    <a class="btn btn-primary btn-sm" href="https://panel.inboxfly.email" target="_blank" rel="noopener">打开面板</a>
+  </div>
+
+  <button class="burger" id="nav-burger" aria-label="Menu">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+</div>
+  <div class="mobile-menu" id="mobile-menu">
+  <a href="/ru/self-hosted#features">Возможности</a>
+  <a href="/ru/self-hosted#how">Как это работает</a>
+  <a href="/ru/docs">Документация</a>
+  <a href="/ru/self-hosted#faq">FAQ</a>
+  <div class="mm-actions"><a class="btn btn-primary btn-sm mm-panel" href="https://panel.inboxfly.email" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>Открыть панель</a>
+</div>
+</nav>
+
+<div class="doc-wrap">
+  <div class="crumb"><a href="/self-hosted">← Назад к InboxFly</a></div>
+  <h1>Документация InboxFly</h1>
+  <p class="doc-sub">Полное руководство для версии с самостоятельным хостингом (open source · MIT): от локальных тестов до продакшена, ежедневное управление и расширенная настройка.</p>
+
+  <div class="toc">
+    <h3>Содержание</h3>
+    <ol>
+      <li><a href="#quickstart">Быстрый старт (локально)</a></li>
+      <li><a href="#deploy">Развернуть на Cloudflare</a></li>
+      <li><a href="#wizard">Мастер первой настройки</a></li>
+      <li><a href="#routing">Включить маршрутизацию почты</a></li>
+      <li><a href="#destinations">Адреса получателей</a></li>
+      <li><a href="#rules">Правила маршрутизации</a></li>
+      <li><a href="#daily">Ежедневное управление</a></li>
+      <li><a href="#storage">Хранилище и квоты</a></li>
+      <li><a href="#security">Безопасность</a></li>
+      <li><a href="#appearance">Темы / язык / PWA</a></li>
+      <li><a href="#limits">Известные ограничения</a></li>
+      <li><a href="#uninstall">Удаление и очистка</a></li>
+    </ol>
+  </div>
+
+  <h2 id="quickstart">1. Быстрый старт локально (3 мин)</h2>
+  <p>Локально реальные письма не принимаются, но можно протестировать весь панель и конвейер (данные через «Симулировать»):</p>
+  <pre><code>git clone https://github.com/INBOXFLY-REPO-PLACEHOLDER/inboxfly.git
+cd inboxfly &amp;&amp; npm install
+npm run dev          # 启动在 http://localhost:8787</code></pre>
+  <ul>
+    <li>Первый визит открывает <strong>мастер настройки</strong>; локальный SETUP_TOKEN — <code>inboxfly-local-setup</code> (см. <code>.dev.vars</code>).</li>
+    <li>Шаг 3 мастера (Включить Email Routing) локально пропускается.</li>
+    <li>В панели нажмите <strong>«Симулировать»</strong>: он создаёт тестовые письма через точно тот же производственный конвейер (совпадение → фильтр → решение → хранение → статистика), пропуская только реальную доставку.</li>
+    <li>Сброс: <code>rm -rf .wrangler</code>, перезапустите и пройдите мастер заново.</li>
+  </ul>
+
+  <h2 id="deploy">2. Развернуть на Cloudflare</h2>
+  <pre><code>npx wrangler login
+npx wrangler deploy           # Worker + 静态面板 + D1 + R2 + KV + Cron
+npx wrangler secret put SETUP_TOKEN    # 首次运行向导用的初始化令牌</code></pre>
+  <ul>
+    <li>Таблицы D1 <strong>создаются автоматически</strong> при первом посещении панели — ручной SQL не нужен (или выполните <code>npx wrangler d1 execute inboxfly --remote --file schema.sql</code> как запасной вариант).</li>
+    <li>Панель по умолчанию доступна на <code>https://inboxfly.&lt;ваш-поддомен&gt;.workers.dev</code>; привяжите пользовательский домен (напр. <code>panel.yourdomain</code>) в Workers → Domains &amp; Routes.</li>
+    <li>Cron Trigger (ежедневная очистка R2 в 03:00 UTC) регистрируется автоматически при развёртывании.</li>
+    <li><code>robots.txt</code> содержит <code>Disallow: /</code>, чтобы частная панель не индексировалась.</li>
+  </ul>
+
+  <h2 id="wizard">3. Мастер первой настройки (5 шагов)</h2>
+  <p>Откройте URL панели после развёртывания и следуйте мастеру. Каждый шаг объясняет «зачем» и «риски»:</p>
+  <ol>
+    <li><strong>Проверка личности развернувшего</strong>: введите SETUP_TOKEN (появляется только в выводе развёртывания, аннулируется после настройки) для защиты от захвата панели.</li>
+    <li><strong>Создать учётные данные администратора</strong>: имя пользователя + пароль ≥8 символов (хэш PBKDF2, невосстановим).</li>
+    <li><strong>Включить Email Routing</strong>: локально пропустить; в продакшене следовать инструкции в дашборде Cloudflare (следующий раздел).</li>
+    <li><strong>Добавить адрес получателя</strong>: введите свой реальный почтовый ящик (напр. Gmail) и завершите подтверждение Cloudflare.</li>
+    <li><strong>Создать первое правило</strong>: по умолчанию <code>*@yourdomain → переслать → подтверждённый адрес</code> и назначает его запасным fail-open.</li>
+  </ol>
+
+  <h2 id="routing">4. Включение маршрутизации почты (для каждого домена)</h2>
+  <p>Нужны три вещи: <strong>главный переключатель Email Routing</strong>, <strong>catch-all на Worker</strong> и <strong>подтверждённый адрес</strong>. Два способа:</p>
+  <h3>Вариант A · Автоматизация через панель (рекомендуется)</h3>
+  <p>После сохранения <strong>токена API CF</strong> в Настройки → Домены появляется кнопка «Включить пересылку» для каждого домена. Панель: обнаруживает конфликты MX (перечисляет для подтверждения каждой записи) → включает Email Routing → добавляет рекомендуемые MX/SPF DNS → направляет catch-all на Worker InboxFly.</p>
+  <div class="tip warn"><strong>Права токена (проверено)</strong>: Аккаунт → Workers Scripts / D1 / KV / R2 Storage (изменение) + Настройки аккаунта (чтение); Зона → Zone (чтение), DNS (изменение), Email Routing Rules (изменение), <strong>Zone Settings (изменение)</strong>. Внимание: включение/запрос Email Routing требует группу «Zone Settings», а не «Email Routing Rules» — отметьте обе, иначе Authentication error.</div>
+  <h3>Вариант B · Вручную в дашборде Cloudflare</h3>
+  <p>Дашборд → зона → Email → Email Routing → Включить (подтвердить замену MX) → адрес catch-all → действие «Send to a Worker» → выбрать <code>inboxfly</code>. Затем обновите панель; все проверки станут зелёными.</p>
+
+  <h2 id="destinations">5. Адреса получателей</h2>
+  <ul>
+    <li>Добавьте свой реальный почтовый ящик на странице Получатели → <strong>Cloudflare автоматически отправляет подтверждение</strong> → после клика получателя панель переходит в «Подтверждён».</li>
+    <li>Адреса — <strong>уровень аккаунта</strong>: подтвердите один раз, используйте везде.</li>
+    <li>Первый подтверждённый адрес становится <strong>запасным fail-open</strong>: Worker пробует его при внутренних ошибках, чтобы избежать тихой потери.</li>
+    <li>Адреса, на которые ссылаются правила, нельзя удалить (вас попросят сначала изменить правило).</li>
+  </ul>
+
+  <h2 id="rules">6. Правила маршрутизации</h2>
+  <p>Страница правил повторяет нативную страницу маршрутизации Cloudflare: единая таблица с фиксированной строкой «📌 Catch-all» в конце.</p>
+  <h3>Создание правила</h3>
+  <ul>
+    <li><strong>Совпадение email</strong>: имя слева (напр. <code>info</code>, <code>support</code>) + @ + список доменов справа; пустое имя = весь домен.</li>
+    <li><strong>Действие</strong>: Отправить на email (переслать на подтверждённый адрес) / Удалить (тихо) / Вернуть (улучшение InboxFly — отказ на уровне SMTP, нативно нет).</li>
+    <li><strong>Расширенные фильтры</strong> (опционально): чёрный список отправителей (по одному в строке: адрес / <code>@домен</code> / <code>/regex/</code>), regex темы, лимит размера (≤25МБ), условие по вложениям.</li>
+  </ul>
+  <h3>Порядок оценки</h3>
+  <p>Точные правила → catch-all, отсортированы в группе, <strong>первое совпадение побеждает</strong>. Несоответствующие письма идут в строку Catch-all (переслать по умолчанию / вернуть / удалить).</p>
+  <div class="tip warn"><strong>Важно</strong>: не создавайте правила маршрутизации вручную в дашборде Cloudflare — нативные правила имеют приоритет над catch-all и обходят InboxFly (ни копий, ни статистики). Импортируйте существующие нативные правила через Настройки → Домены.</div>
+
+  <h2 id="daily">7. Ежедневное управление</h2>
+  <ul>
+    <li><strong>Список писем</strong>: фильтр по домену / статусу / ключевому слову; пакетное удаление с множественным выбором.</li>
+    <li><strong>Детали письма</strong>: рендер HTML в песочнице (удалённые изображения заблокированы), текстовый вид, скачивание вложений, исходный MIME (.eml).</li>
+    <li><strong>Статистика</strong>: по статусу (переслано/заблокировано/удалено/возвращено/ошибка) и домену, тренды за 14 дней. «Переслано» = Cloudflare принял пересылку; итоговое размещение ненаблюдаемо.</li>
+    <li><strong>Раскладка</strong>: кнопка справа вверху переключает режимы боковая панель / шапка; на мобильных всегда шапка.</li>
+  </ul>
+
+  <h2 id="storage">8. Хранилище и квоты</h2>
+  <ul>
+    <li>Копии (HTML/текст/исходный MIME) и вложения живут в <strong>вашем R2</strong>, по умолчанию <strong>30 дней</strong> с ежедневной автоочисткой в 03:00 UTC (настраивается; доступна ручная очистка).</li>
+    <li>Заблокированные фильтром письма хранят <strong>только метаданные</strong> по умолчанию (защита от спам-шторма); включите полное хранение при необходимости.</li>
+    <li>Появляется предупреждение, когда оценка R2 за 30 дней превышает 9ГБ, с переключением в один клик на режим «только метаданные» (пересылка не затрагивается).</li>
+  </ul>
+
+  <h2 id="security">9. Безопасность</h2>
+  <ul>
+    <li><strong>Cloudflare Turnstile</strong>: Настройки → Защита от ботов, вставьте ключи Site/Secret и включите — при входе появляется проверка «человек ли вы» (siteverify на сервере). Для локальных тестов официальные тестовые ключи: Site <code>1x00000000000000000000AA</code> / Secret <code>1x0000000000000000000000000000000AA</code> (всегда успех).</li>
+    <li><strong>Аккаунт администратора</strong>: Настройки → Аккаунт администратора; изменение имени/пароля аннулирует все другие сессии.</li>
+    <li><strong>Сессии</strong>: 24ч по умолчанию, 30 дней с «запомнить меня»; защита CSRF на изменениях, ограничение входа.</li>
+    <li><strong>Безопасность содержимого</strong>: тела рендерятся в iframe-песочнице (скрипты отключены), серверная санитизация удаляет опасную разметку, удалённые изображения заблокированы по умолчанию.</li>
+  </ul>
+
+  <h2 id="appearance">10. Темы / язык / PWA</h2>
+  <ul>
+    <li><strong>3 темы × светлая/тёмная</strong>: Fluid Glass (по умолчанию) / Minimal / Playful, каждая с полной тёмной версией; по умолчанию следует системе.</li>
+    <li><strong>10 языков</strong>: автоопределение из браузера; переключение в любой момент через иконку глобуса.</li>
+    <li><strong>Установка PWA</strong>: Android Chrome → меню «Установить приложение» (или кнопка в настройках); iOS Safari → Поделиться → «На экран «Домой»».</li>
+  </ul>
+
+  <h2 id="limits">11. Известные ограничения</h2>
+  <ul>
+    <li>Локально нельзя получать реальные письма (Email Routing — производственная функция) — используйте «Симулировать».</li>
+    <li>«Переслано» означает, что Cloudflare принял; размещение в спаме ненаблюдаемо. При необходимости добавьте домен в белый список в почте получателя.</li>
+    <li>Не смешивайте нативные правила Cloudflare и InboxFly на одном домене (они обходят панель); сосуществование на уровне зоны допустимо.</li>
+    <li>25МиБ на сообщение (ограничение платформы Cloudflare).</li>
+  </ul>
+
+  <h2 id="uninstall">12. Удаление и очистка</h2>
+  <ol>
+    <li>Отзовите токен API CF панели (дашборд → Токены API) — конвейер пересылки работает независимо в вашем аккаунте и продолжает работу; автоматизация панели деградирует.</li>
+    <li>Остановить пересылку: дашборд → Email Routing → отключить Catch-all или всю службу.</li>
+    <li>Удалить ресурсы: Workers → inboxfly; D1 → inboxfly; R2 → inboxfly; KV → пространство имён.</li>
+  </ol>
+
+  <div class="tip">Если здесь чего-то нет, откройте тикет на GitHub (ссылка на репозиторий на странице продукта).</div>
+</div>
+
+<footer class="footer"><div class="footer-inner">
+  <div class="col" style="max-width:300px;">
+    <div class="brandline"><img src="/assets/logo-email.svg" alt="InboxFly" title="InboxFly"></div>
+    <p style="font-weight:700;font-size:14px;letter-spacing:-.01em;margin-bottom:8px;">Ваша почта. Ваш Cloudflare. Одна панель.</p>
+    <p style="font-size:13px;color:var(--text-2);">Панель управления с открытым исходным кодом для Cloudflare Email Routing.</p>
+  </div>
+  <div class="col">
+    <h4>Продукт</h4>
+    <a href="https://panel.inboxfly.email" target="_blank" rel="noopener">Открыть панель</a>
+    <a href="/ru/self-hosted">Self-hosted</a>
+    <a href="#" title="GitHub repo coming soon">GitHub</a>
+  </div>
+  <div class="col">
+    <h4>Ресурсы</h4>
+    <a href="/ru/docs">Документация</a>
+    <a href="#features">Возможности</a>
+    <a href="#how">Как это работает</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <div class="col"><h4>Компания</h4><a href="/ru/about">О нас</a><a href="/ru/terms">Условия</a><a href="/ru/privacy">Конфиденциальность</a><a href="mailto:support@inboxfly.email">support@inboxfly.email</a></div>
+</div></footer>
+<div class="copy">© 2026 InboxFly — open source under MIT</div>
+
+<script src="/assets/landing.js?v=6"></script>
+</body>
+</html>

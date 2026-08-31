@@ -21,6 +21,9 @@ export async function ensureSchema(env) {
     await env.DB.prepare("ALTER TABLE emails ADD COLUMN is_read INTEGER NOT NULL DEFAULT 0").run();
     await env.DB.prepare("UPDATE emails SET is_read = 1").run();
   }
+  // 未读轮询索引（v0.6.1）
+  const idx = await env.DB.prepare("SELECT name FROM sqlite_master WHERE type='index' AND name='idx_emails_read'").first();
+  if (!idx) await env.DB.prepare("CREATE INDEX idx_emails_read ON emails(is_read)").run();
   schemaReady = true;
 }
 

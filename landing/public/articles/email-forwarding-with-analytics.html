@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en" data-mode="light" data-lang="en" data-alt="/zh/articles/self-hosted-email-forwarding-guide">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Email Forwarding with Analytics: Track Your Forwarded Mail | InboxFly</title>
+<meta name="description" content="Self-hosted email forwarding with analytics: per-rule and per-domain stats for forwarded, blocked, dropped and bounced mail, visible in one panel.">
+<meta name="keywords" content="email forwarding with analytics, self-hosted email forwarding analytics, email forwarding management, email forwarding Cloudflare">
+<link rel="icon" href="/assets/favicon.png" type="image/png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="InboxFly">
+<meta property="og:title" content="Email Forwarding with Analytics: Track Your Forwarded Mail | InboxFly">
+<meta property="og:description" content="Self-hosted email forwarding with analytics: per-rule and per-domain stats for forwarded, blocked, dropped and bounced mail, visible in one panel.">
+<meta property="og:url" content="https://inboxfly.email/articles/email-forwarding-with-analytics">
+<meta property="og:image" content="https://inboxfly.email/assets/logo-512.png">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="https://inboxfly.email/articles/email-forwarding-with-analytics">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..1000&display=swap" rel="stylesheet">
+<script>try{var m=localStorage.getItem('site-mode');document.documentElement.dataset.mode=m||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');}catch(e){}</script>
+<link rel="stylesheet" href="/assets/style.css?v=14">
+
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Email Forwarding with Analytics: Track Your Forwarded Mail", "description": "Self-hosted email forwarding with analytics: per-rule and per-domain stats for forwarded, blocked, dropped and bounced mail, visible in one panel.", "url": "https://inboxfly.email/articles/email-forwarding-with-analytics", "author": {"@type": "Organization", "name": "InboxFly"}, "publisher": {"@type": "Organization", "name": "InboxFly"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Does InboxFly track opens or clicks?", "acceptedAnswer": {"@type": "Answer", "text": "No — it blocks tracking pixels in forwarded mail by default. Analytics are about your pipeline, not your recipients."}}]}</script>
+</head>
+<body>
+
+<nav class="nav"><div class="nav-inner">
+  <a class="logo" href="/self-hosted" title="InboxFly"><img src="/assets/logo.svg" alt="InboxFly"></a>
+  <div class="nav-links">
+    <a href="/self-hosted#features">Features</a>
+    <a href="/self-hosted#how">How it works</a>
+    <a href="/articles" style="color:var(--text);font-weight:650;">Articles</a>
+    <a href="/docs">Docs</a>
+    <a href="/self-hosted#faq">FAQ</a>
+  </div>
+  <div class="nav-actions">
+    <div class="lang-drop">
+  <button class="lang-btn" aria-label="Language" title="Language">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>
+  </button>
+  <div class="lang-menu">
+    <a href="#" data-l="en">English</a>
+    <a href="#" data-l="zh">简体中文</a>
+    <a href="#" data-l="ja">日本語</a>
+    <a href="#" data-l="ko">한국어</a>
+    <a href="#" data-l="de">Deutsch</a>
+    <a href="#" data-l="fr">Français</a>
+    <a href="#" data-l="it">Italiano</a>
+    <a href="#" data-l="ru">Русский</a>
+    <a href="#" data-l="vi">Tiếng Việt</a>
+  </div>
+</div>
+    <button class="mode-btn" aria-label="Toggle theme">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></svg>
+    </button>
+    <a class="btn btn-primary btn-sm" href="https://panel.inboxfly.email" target="_blank" rel="noopener">Open panel</a>
+  </div>
+  <button class="burger" id="nav-burger" aria-label="Menu">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+</div>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="/self-hosted#features">Features</a>
+  <a href="/self-hosted#how">How it works</a>
+  <a href="/articles">Articles</a>
+  <a href="/docs">Docs</a>
+  <a href="/self-hosted#faq">FAQ</a>
+  <div class="mm-actions"><a class="btn btn-primary btn-sm mm-panel" href="https://panel.inboxfly.email" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>Open panel</a>
+</div>
+</nav>
+
+<div class="doc-wrap">
+  <div class="crumb"><a href="/articles">← Articles</a></div>
+  <h1>Email Forwarding with Analytics: Track Your Forwarded Mail</h1>
+  <p class="doc-sub">How Cloudflare Email Workers handle inbound mail at the edge — parsing, forwarding, storage and filtering — with the classic pitfalls to avoid.</p>
+  <div class="art-body">
+<p>Forwarding email without analytics is flying blind. You know mail comes in, but not how much, from where, or how your filters are performing. A <strong>self-hosted email forwarding</strong> setup can count every decision it makes — and surface it in a panel you control.</p>
+<h2>What email forwarding analytics should show</h2>
+<ul>
+<li><strong>Volume by status</strong> — forwarded, blocked, dropped, bounced, error.</li>
+<li><strong>Per rule and per domain</strong> — which catch-all or exact rule is doing the work.</li>
+<li><strong>Trends</strong> — a 14-day view to spot spikes or a sudden drop.</li>
+<li><strong>Storage impact</strong> — how much of your R2 bucket the archive is using.</li>
+</ul>
+<h2>How the numbers are produced</h2>
+<p>Every inbound email passes the same pipeline: parse → match rule → apply filters → forward/store. At the end, the Worker upserts a per-day, per-domain counter into D1. Because counting happens at decision time, <em>blocked</em> and <em>dropped</em> are measured just as accurately as <em>forwarded</em>.</p>
+<h2>A caveat about delivery</h2>
+<p>One number you will never see is <strong>final delivery</strong> — whether the recipient’s mailbox actually accepted the mail. Cloudflare only confirms it accepted the forward. Any service has the same blind spot; the analytics above are the honest, observable subset.</p>
+<h2>Where to get it</h2>
+<p><a href="/self-hosted">InboxFly</a> includes these analytics out of the box: status totals, per-domain breakdown, 14-day trends, and a storage estimate — all from your own D1 data.</p>
+<h2>FAQ</h2>
+<p><strong>Does InboxFly track opens or clicks?</strong> No — it blocks tracking pixels in forwarded mail by default. Analytics are about your pipeline, not your recipients.</p>
+  </div>
+  <div class="art-cta">
+    <a class="btn btn-primary" href="https://panel.inboxfly.email" target="_blank" rel="noopener">Open panel</a>
+    <a class="btn btn-ghost" href="/self-hosted">About InboxFly</a>
+  </div>
+</div>
+
+<footer class="footer"><div class="footer-inner">
+  <div class="col" style="max-width:300px;">
+    <div class="brandline"><img src="/assets/logo-email.svg" alt="InboxFly" title="InboxFly"></div>
+    <p style="font-weight:700;font-size:14px;letter-spacing:-.01em;margin-bottom:8px;">Your mail. Your Cloudflare. One panel.</p>
+    <p style="font-size:13px;color:var(--text-2);">The open-source management panel for Cloudflare Email Routing. Built for people who run their mail on their own account.</p>
+  </div>
+  <div class="col">
+    <h4>Product</h4>
+    <a href="https://panel.inboxfly.email" target="_blank" rel="noopener">Open panel</a>
+    <a href="/self-hosted">Self-hosted</a>
+    <a href="#" title="GitHub repo coming soon">GitHub</a>
+  </div>
+  <div class="col">
+    <h4>Resources</h4>
+    <a href="/docs">Documentation</a>
+    <a href="#features">Features</a>
+    <a href="#how">How it works</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <div class="col"><h4>Company</h4><a href="/about">About</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="mailto:support@inboxfly.email">support@inboxfly.email</a></div>
+</div></footer>
+<div class="copy">© 2026 InboxFly — open source under MIT</div>
+
+<script>window.addEventListener("load",()=>{navigator.serviceWorker&&navigator.serviceWorker.register("/sw.js").catch(()=>{})});</script>
+<script src="/assets/landing.js?v=6"></script>
+</body>
+</html>

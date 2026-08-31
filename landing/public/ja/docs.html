@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en" data-mode="light" data-lang="en" data-alt="/zh/docs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>ドキュメント — InboxFly セルフホスト版</title>
+<meta name="description" content="InboxFly セルフホスト版の完全ドキュメント：ローカル開発、Cloudflare へのデプロイ、セットアップウィザード、メールルーティング、ルール、ストレージ、セキュリティ。">
+<link rel="icon" href="/assets/favicon.png" type="image/png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0a84ff">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..1000&display=swap" rel="stylesheet">
+<script>try{var m=localStorage.getItem('site-mode');document.documentElement.dataset.mode=m||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');}catch(e){}</script>
+<link rel="stylesheet" href="/assets/style.css?v=14">
+</head>
+<body>
+
+<nav class="nav"><div class="nav-inner">
+  <a class="logo" href="/self-hosted" title="InboxFly"><img src="/assets/logo.svg" alt="InboxFly"></a>
+  <div class="nav-links">
+    <a href="/ja/self-hosted#features">機能</a>
+    <a href="/ja/self-hosted#how">使い方</a>
+    <a href="/ja/docs" style="color:var(--text);font-weight:650;">ドキュメント</a>
+    <a href="/ja/self-hosted#faq">FAQ</a>
+  </div>
+  <div class="nav-actions">
+    <div class="lang-drop">
+  <button class="lang-btn" aria-label="Language" title="Language">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>
+  </button>
+  <div class="lang-menu">
+    <a href="#" data-l="en">English</a>
+    <a href="#" data-l="zh">简体中文</a>
+    <a href="#" data-l="ja">日本語</a>
+    <a href="#" data-l="ko">한국어</a>
+    <a href="#" data-l="de">Deutsch</a>
+    <a href="#" data-l="fr">Français</a>
+    <a href="#" data-l="it">Italiano</a>
+    <a href="#" data-l="ru">Русский</a>
+    <a href="#" data-l="vi">Tiếng Việt</a>
+  </div>
+</div>
+    <button class="mode-btn" title="切换深浅色" aria-label="切换深浅色">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></svg>
+    </button>
+    <a class="btn btn-primary btn-sm" href="https://panel.inboxfly.email" target="_blank" rel="noopener">打开面板</a>
+  </div>
+
+  <button class="burger" id="nav-burger" aria-label="Menu">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+</div>
+  <div class="mobile-menu" id="mobile-menu">
+  <a href="/ja/self-hosted#features">機能</a>
+  <a href="/ja/self-hosted#how">使い方</a>
+  <a href="/ja/docs">ドキュメント</a>
+  <a href="/ja/self-hosted#faq">FAQ</a>
+  <div class="mm-actions"><a class="btn btn-primary btn-sm mm-panel" href="https://panel.inboxfly.email" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>パネルを開く</a>
+</div>
+</nav>
+
+<div class="doc-wrap">
+  <div class="crumb"><a href="/ja/self-hosted">← InboxFly へ戻る</a></div>
+  <h1>InboxFly ドキュメント</h1>
+  <p class="doc-sub">セルフホスト版（オープンソース・MIT）の完全ガイド：ローカル検証から本番運用・詳細設定まで。</p>
+
+  <div class="toc">
+    <h3>目次</h3>
+    <ol>
+      <li><a href="#quickstart">ローカルで始める</a></li>
+      <li><a href="#deploy">Cloudflare にデプロイ</a></li>
+      <li><a href="#wizard">初回ウィザード</a></li>
+      <li><a href="#routing">メールルーティングを有効化</a></li>
+      <li><a href="#destinations">宛先アドレス</a></li>
+      <li><a href="#rules">ルーティングルール</a></li>
+      <li><a href="#daily">日常管理</a></li>
+      <li><a href="#storage">ストレージとクォータ</a></li>
+      <li><a href="#security">セキュリティ</a></li>
+      <li><a href="#appearance">テーマ/言語/PWA</a></li>
+      <li><a href="#limits">既知の制限</a></li>
+      <li><a href="#uninstall">アンインストールとクリーンアップ</a></li>
+    </ol>
+  </div>
+
+  <h2 id="quickstart">1. ローカルで始める（3分）</h2>
+  <p>ローカル環境では実際のメール受信はできませんが、パネルとパイプライン一式を試せます（「シミュレート」でテストデータを投入）：</p>
+  <pre><code>git clone https://github.com/INBOXFLY-REPO-PLACEHOLDER/inboxfly.git
+cd inboxfly &amp;&amp; npm install
+npm run dev          # 启动在 http://localhost:8787</code></pre>
+  <ul>
+    <li>初回アクセスで<strong>セットアップウィザード</strong>が開きます。ローカル SETUP_TOKEN は <code>inboxfly-local-setup</code>（<code>.dev.vars</code> 参照）。</li>
+    <li>ウィザード手順3（Email Routing 有効化）はローカルではスキップ。</li>
+    <li>パネルの<strong>「シミュレート」</strong>：本番と同一のパイプライン（マッチ→フィルタ→判定→保存→統計）でテストメールを投入し、実際の配信のみスキップ。</li>
+    <li>リセット：<code>rm -rf .wrangler</code> 後に再起動してウィザードを再度実行。</li>
+  </ul>
+
+  <h2 id="deploy">2. Cloudflare にデプロイ</h2>
+  <pre><code>npx wrangler login
+npx wrangler deploy           # Worker + 静态面板 + D1 + R2 + KV + Cron
+npx wrangler secret put SETUP_TOKEN    # 首次运行向导用的初始化令牌</code></pre>
+  <ul>
+    <li>D1 テーブルは初回アクセス時に<strong>自動作成</strong>（手動 SQL 不要。フォールバックとして <code>npx wrangler d1 execute inboxfly --remote --file schema.sql</code> も可）。</li>
+    <li>パネルは <code>https://inboxfly.&lt;サブドメイン&gt;.workers.dev</code> が既定。Workers → Domains &amp; Routes でカスタムドメイン（例 <code>panel.yourdomain</code>）を設定推奨。</li>
+    <li>Cron Trigger（毎日 03:00 UTC の R2 クリーンアップ）はデプロイ時に自動登録。</li>
+    <li><code>robots.txt</code> に <code>Disallow: /</code> が含まれ、プライベートパネルはインデックスされません。</li>
+  </ul>
+
+  <h2 id="wizard">3. 初回ウィザード（5ステップ）</h2>
+  <p>デプロイ後にパネル URL を開き、ウィザードに従います。各ステップで「理由」と「リスク」を説明します：</p>
+  <ol>
+    <li><strong>デプロイ者の確認</strong>：SETUP_TOKEN を入力（デプロイ出力のみに表示、設定完了後に無効化）—パネル乗っ取り防止。</li>
+    <li><strong>管理者認証情報の作成</strong>：ユーザー名 + 8文字以上のパスワード（PBKDF2 ハッシュ、復元不可）。</li>
+    <li><strong>Email Routing の有効化</strong>：ローカルではスキップ。本番では Cloudflare ダッシュボードの案内に従う（次節）。</li>
+    <li><strong>宛先アドレスの追加</strong>：実メールボックス（例 Gmail）を入力し、Cloudflare の確認を完了。</li>
+    <li><strong>最初のルールを作成</strong>：既定 <code>*@yourdomain → 転送 → 確認済み宛先</code>、fail-open フォールバックとして設定。</li>
+  </ol>
+
+  <h2 id="routing">4. メールルーティングの有効化（ドメインごと）</h2>
+  <p>必要なのは3つ：<strong>Email Routing マスタースイッチ</strong>、<strong>Worker を指す catch-all</strong>、<strong>確認済みの宛先</strong>。2つの方法：</p>
+  <h3>方法A · パネル自動化（推奨）</h3>
+  <p>設定 → ドメインで <strong>CF API トークン</strong>を保存すると、ドメインごとに「転送を有効化」ボタンが表示。パネルが自動で：MX 競合の検出（一覧表示してレコードごとに確認）→ Email Routing 有効化 → 推奨 MX/SPF DNS 追加 → catch-all を InboxFly Worker に設定。</p>
+  <div class="tip warn"><strong>トークン権限（実測済み）</strong>：Account → Workers Scripts / D1 / KV / R2 Storage（編集）+ Account Settings（読み取り）；Zone → Zone（読み取り）、DNS（編集）、Email Routing Rules（編集）、<strong>Zone Settings（編集）</strong>。注意：Email Routing の有効化/照会には「Zone Settings」グループが必要で「Email Routing Rules」では不足 — 両方オンにしないと Authentication error。</div>
+  <h3>方法B · Cloudflare ダッシュボードで手動</h3>
+  <p>ダッシュボード → ゾーン → Email → Email Routing → 有効化（MX 置換を確認）→ Catch-all アドレス → アクション「Send to a Worker」→ <code>inboxfly</code> を選択。後にパネルを更新するとドメインの健全性チェックがすべて緑に。</p>
+
+  <h2 id="destinations">5. 宛先アドレス</h2>
+  <ul>
+    <li>宛先ページで実メールボックスを追加 → <strong>Cloudflare が確認メールを自動送信</strong> → 受信者がクリックすると自動的に「確認済み」に。</li>
+    <li>宛先は<strong>アカウント単位</strong>：一度確認すれば全ドメインで使用可能。</li>
+    <li>最初の確認済みアドレスが<strong>fail-open フォールバック</strong>になります：Worker が内部エラー時に試行し、無音の損失を防止。</li>
+    <li>ルールが参照するアドレスは削除不可（先にルールを編集するよう求められます）。</li>
+  </ul>
+
+  <h2 id="rules">6. ルーティングルール</h2>
+  <p>ルールページは Cloudflare のルーティングページを踏襲：統一ルール表＋末尾に固定の「📌 Catch-all」フォールバック行。</p>
+  <h3>ルールの作成</h3>
+  <ul>
+    <li><strong>メールマッチ</strong>：左に名前（例 <code>info</code>、<code>support</code>）+ @ + 右にドメイン選択。名前空欄 = ドメイン全体。</li>
+    <li><strong>アクション</strong>：メールへ送信（確認済み宛先へ転送）/ 破棄（サイレント）/ バウンス（InboxFly 拡張 — SMTP レベル拒否、ネイティブにはなし）。</li>
+    <li><strong>高度なフィルタ</strong>（任意拡張）：送信者ブラックリスト（1行1件：アドレス / <code>@ドメイン</code> / <code>/正規表現/</code>）、件名正規表現、サイズ上限（≤25MB）、添付条件。</li>
+  </ul>
+  <h3>評価順序</h3>
+  <p>正確ルール → catch-all ルール、グループ内でソート、<strong>先にマッチしたものが勝ち</strong>。未マッチは Catch-all 行（既定宛先へ転送/バウンス/破棄）。</p>
+  <div class="tip warn"><strong>重要</strong>：Cloudflare ダッシュボードで手動ルーティングルールを作成しないでください — ネイティブルールは catch-all より優先され InboxFly をバイパス（コピーも統計もなし）。既存ネイティブルールは 設定 → ドメイン からインポート。</div>
+
+  <h2 id="daily">7. 日常管理</h2>
+  <ul>
+    <li><strong>メールリスト</strong>：ドメイン/ステータス/キーワードで絞り込み、一括選択削除対応。</li>
+    <li><strong>メール詳細</strong>：サンドボックス HTML レンダリング（リモート画像ブロック）、プレーンテキスト表示、添付ダウンロード、生 MIME（.eml）。</li>
+    <li><strong>統計</strong>：ステータス（転送/ブロック/破棄/バウンス/エラー）とドメイン別、14日トレンド。「転送済み」＝ Cloudflare が受理したことを意味し、最終配置は観測不可。</li>
+    <li><strong>レイアウト</strong>：右上ボタンでサイドバー/ヘッダーモード切替。モバイルは常にヘッダーレイアウト。</li>
+  </ul>
+
+  <h2 id="storage">8. ストレージとクォータ</h2>
+  <ul>
+    <li>コピー（HTML/テキスト/生 MIME）と添付は<strong>あなたの R2</strong>に保存、既定<strong>30日</strong>保持で毎日 03:00 UTC 自動クリーンアップ（設定で調整可、手動クリーンアップも可）。</li>
+    <li>フィルタでブロックされたメールは既定<strong>メタデータのみ</strong>保存（スパムストーム対策）。必要時に本文保存を有効化。</li>
+    <li>30日 R2 見積が 9GB を超えると警告バナーが表示され、ワンクリックでメタデータのみモードへ（転送には影響なし）。</li>
+  </ul>
+
+  <h2 id="security">9. セキュリティ</h2>
+  <ul>
+    <li><strong>Cloudflare Turnstile</strong>：設定 → ボット対策で Site/Secret キーを貼って有効化 — サインイン時に人間確認が表示（サーバー側 siteverify）。ローカルテスト用の公式テストキー：Site <code>1x00000000000000000000AA</code> / Secret <code>1x0000000000000000000000000000000AA</code>（常に成功）。</li>
+    <li><strong>管理者アカウント</strong>：設定 → 管理者アカウント。ユーザー名/パスワード変更で他セッションは全て無効化。</li>
+    <li><strong>セッション</strong>：既定24時間、「ログイン状態を保持」で30日。変更系は CSRF 保護、ログインはレート制限。</li>
+    <li><strong>メール内容の安全性</strong>：本文は iframe サンドボックス（スクリプト無効）でレンダリング、サーバー側サニタイズで危険マークアップ除去、リモート画像は既定でブロック。</li>
+  </ul>
+
+  <h2 id="appearance">10. テーマ/言語/PWA</h2>
+  <ul>
+    <li><strong>3テーマ × ライト/ダーク</strong>：Fluid Glass（既定）/ Minimal / Playful、各フルダーク版。既定でシステム追従。</li>
+    <li><strong>10言語</strong>：ブラウザから自動検出。地球アイコンでいつでも切替。</li>
+    <li><strong>PWA インストール</strong>：Android Chrome → メニュー「アプリをインストール」（または設定ボタン）。iOS Safari → 共有 → 「ホーム画面に追加」。</li>
+  </ul>
+
+  <h2 id="limits">11. 既知の制限</h2>
+  <ul>
+    <li>ローカルは実メール受信不可（Email Routing は本番機能）— ローカルでは「シミュレート」を使用。</li>
+    <li>「転送済み」は Cloudflare が受理した意味。スパムフォルダ配置は観測不可。必要なら受信メールボックスでドメインを許可。</li>
+    <li>同一ドメインで Cloudflare ネイティブルールと InboxFly を混在させない（パネルをバイパスします）。ゾーン単位の併存は問題なし。</li>
+    <li>メッセージあたり 25MiB（Cloudflare プラットフォーム制限）。</li>
+  </ul>
+
+  <h2 id="uninstall">12. アンインストールとクリーンアップ</h2>
+  <ol>
+    <li>パネルの CF API トークンを失効（ダッシュボード → API トークン）— 転送パイプラインはあなたのアカウントで独立稼働し続けます。パネル自動化は縮退。</li>
+    <li>転送停止：ダッシュボード → Email Routing → Catch-all または全体を無効化。</li>
+    <li>リソース削除：Workers → inboxfly；D1 → inboxfly；R2 → inboxfly；KV → 名前空間。</li>
+  </ol>
+
+  <div class="tip">ここにない質問は GitHub Issue でお知らせください（リポジトリリンクは製品ページに）。</div>
+</div>
+
+<footer class="footer"><div class="footer-inner">
+  <div class="col" style="max-width:300px;">
+    <div class="brandline"><img src="/assets/logo-email.svg" alt="InboxFly" title="InboxFly"></div>
+    <p style="font-weight:700;font-size:14px;letter-spacing:-.01em;margin-bottom:8px;">あなたのメール。あなたの Cloudflare。ひとつのパネル。</p>
+    <p style="font-size:13px;color:var(--text-2);">Cloudflare Email Routing のためのオープンソース管理パネル。</p>
+  </div>
+  <div class="col">
+    <h4>製品</h4>
+    <a href="https://panel.inboxfly.email" target="_blank" rel="noopener">パネルを開く</a>
+    <a href="/ja/self-hosted">セルフホスト版</a>
+    <a href="#" title="GitHub repo coming soon">GitHub</a>
+  </div>
+  <div class="col">
+    <h4>リソース</h4>
+    <a href="/ja/docs">ドキュメント</a>
+    <a href="#features">機能</a>
+    <a href="#how">使い方</a>
+    <a href="#faq">よくある質問</a>
+  </div>
+  <div class="col"><h4>会社</h4><a href="/ja/about">会社概要</a><a href="/ja/terms">利用規約</a><a href="/ja/privacy">プライバシーポリシー</a><a href="mailto:support@inboxfly.email">support@inboxfly.email</a></div>
+</div></footer>
+<div class="copy">© 2026 InboxFly — MIT ライセンスで公開</div>
+
+<script src="/assets/landing.js?v=6"></script>
+</body>
+</html>
